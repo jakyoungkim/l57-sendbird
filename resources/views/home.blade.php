@@ -2,7 +2,6 @@
 
 @section('sidebar')
     @parent
-
     <p>test section 입니다</p>
 @endsection
 
@@ -16,6 +15,6 @@
                 TimeLines
             </div>
         </div>
-        <send-bird></send-bird>
+        <send-bird :headerText="'test'"></send-bird>
     </div>
 @endsection

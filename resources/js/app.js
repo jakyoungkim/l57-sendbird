@@ -6,12 +6,14 @@
  */
 require('./bootstrap');
 import utile from './utile/utile.js'
+import SendBird from 'sendbird'
 window.Vue = require('vue');
 
 /**
  * custom utile
  * */
 Vue.prototype.$utile = utile;
+Vue.prototype.$sendbird = SendBird;
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

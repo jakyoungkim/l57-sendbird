@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class HomeController extends Controller
 {
@@ -27,7 +28,8 @@ class HomeController extends Controller
     }
     public function end()
     {
-        return view( 'end');
+        $data['name'] = 'kim ja kyoung';
+        $data['old'] = 29;
+        return view( 'end', $data);
     }
-
 }
