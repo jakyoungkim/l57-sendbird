@@ -19,7 +19,7 @@
                                     </tr>
                                     <tr>
                                         <td @click="groupChannelList">group 채널</td>
-                                        <td>+</td>
+                                        <td @click="groupChannelAdd">+</td>
                                     </tr>
                                 </table>
                             </div>
@@ -73,6 +73,10 @@
             },
             openChannelAdd: function () {
                 this.$store.commit('popupTitle', 'open 채널')
+                this.popupOpen()
+            },
+            groupChannelAdd: function () {
+                this.$store.commit('popupTitle', 'group 채널')
                 this.popupOpen()
             },
             groupChannelList: function () {

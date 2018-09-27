@@ -48894,6 +48894,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.$store.commit('popupTitle', 'open 채널');
             this.popupOpen();
         },
+        groupChannelAdd: function groupChannelAdd() {
+            this.$store.commit('popupTitle', 'group 채널');
+            this.popupOpen();
+        },
         groupChannelList: function groupChannelList() {
             var openChannelList = this.sbUtile.OpenChannel.createOpenChannelListQuery();
             openChannelList.next(function (channels, error) {
@@ -48992,7 +48996,9 @@ var render = function() {
                               _vm._v("group 채널")
                             ]),
                             _vm._v(" "),
-                            _c("td", [_vm._v("+")])
+                            _c("td", { on: { click: _vm.groupChannelAdd } }, [
+                              _vm._v("+")
+                            ])
                           ])
                         ])
                       ])
