@@ -80,7 +80,6 @@
             @section('endArea')
             @show
         </main>
-
     </div>
 </body>
 </html>

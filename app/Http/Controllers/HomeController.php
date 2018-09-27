@@ -24,7 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $data['name'] = '076F2CD7-A154-4522-8415-112D6CDB2248';
+        return view('home', $data);
     }
     public function end()
     {
