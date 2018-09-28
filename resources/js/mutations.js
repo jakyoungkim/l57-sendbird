@@ -7,5 +7,11 @@ export default {
     },
     popupTitle(state, data) {
         state.popupTitle = data
+    },
+    openChannelListItem(state, data) {
+        state.openChannelListItem = data
+    },
+    setOpenChannel(state, data) {
+        state.setOpenChannel = data
     }
 }

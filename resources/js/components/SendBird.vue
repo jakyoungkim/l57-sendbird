@@ -8,7 +8,8 @@
                             <input class="input-area-1 float-left" v-model="userId" placeholder="아이디 or Email 입력"/>
                             <div class="area-1 d-inline-block font-color-fff
                             background-761 float-right line-h-50" data-font='15'
-                            @click="connectBtn">확인</div>
+                                 @click="connectBtn">확인
+                            </div>
                         </div>
                         <div v-if="viewData.menu" class="w-h-100">
                             <div class="area-2 float-left">
@@ -23,12 +24,31 @@
                                     </tr>
                                 </table>
                             </div>
+                            <div class="area-3 float-left">
+                                <div v-if="!viewData.chat">
+                                    <div class="listArea"
+                                         v-for="(item, index) in $store.getters.getOpenChannelListItem "
+                                         @click="openChannelEnter(index)"
+                                         :class="{'top-10': index !== 0}">#{{ item.name }}
+                                    </div>
+                                </div>
+                                <div v-else class="w-h-100">
+                                    <div class="area-4">#{{ $store.getters.getSetOpenChannel.name }}</div>
+                                    <div class="area-5">
+                                        <div class="area-7" v-for="(item, index) in totalMsg">
+                                            {{item.userId}}: {{ item.message }}
+                                        </div>
+                                    </div>
+                                    <input class="area-6" placeholder="입력..." @keydown.enter="enterEvent"
+                                           v-model="inputData"></input>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </td>
             </tr>
         </table>
-        <creat-popup v-if="$store.getters.getCreatePopup" :title="'test'"></creat-popup>
+        <creat-popup v-if="$store.getters.getCreatePopup" :sbUtile="sbUtile"></creat-popup>
     </div>
 </template>
 <script>
@@ -42,34 +62,80 @@
         data() {
             return {
                 sbUtile: {},
+                handler: {},
                 userId: 'jkkim',
                 viewData: {
-                    menu: false
+                    menu: false,
+                    channelMenu: true,
+                    chat: false
                 },
                 popupTitle: '',
+                inputData: '',
+                totalMsg: []
             }
         },
         methods: {
             connectBtn: function () {
                 const that = this.viewData
-                this.sbUtile.connect(this.userId, function(user, error) {
+                this.sbUtile.connect(this.userId, function (user, error) {
                     if (error) {
                         console.log(error)
                     } else {
-                        console.log(user)
                         that.menu = true
                     }
                 });
             },
             openChannelList: function () {
+                let that = this.$store
                 let openChannelList = this.sbUtile.OpenChannel.createOpenChannelListQuery();
                 openChannelList.next(function (channels, error) {
                     if (error) {
                         console.log(error);
                         return;
                     }
-                    console.log(channels);
+                    that.commit('openChannelListItem', channels)
                 });
+            },
+            openChannelEnter: function (index) {
+                const thatStore = this.$store
+                const thattTtalMsg =this.totalMsg
+                const openListItem = thatStore.getters.getOpenChannelListItem
+                const indexItem = openListItem[index]
+                const indexUrl = indexItem.url
+                const thatViewData = this.viewData
+                const thatHandler = this.createConnectionHandler
+                this.sbUtile.OpenChannel.getChannel(indexUrl, function (channel, error) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    channel.enter(function (response, error) {
+                        if (error) {
+                            console.error(error)
+                            return
+                        }
+                        thatViewData.chat = true
+                        thatStore.commit("setOpenChannel", channel)
+                    });
+                    let messageListQuery = channel.createPreviousMessageListQuery()
+                    messageListQuery.load(30, true, function (messageList, error) {
+                        if (error) {
+                            console.error(error)
+                            return
+                        }
+                        messageList.forEach(function(data) {
+                            thattTtalMsg.unshift({
+                                userId: data._sender.userId,
+                                message: data.message
+                            })
+
+                        })
+                    })
+                });
+                /**
+                 * Handler
+                 * */
+                 thatHandler('123123qw')
             },
             openChannelAdd: function () {
                 this.$store.commit('popupTitle', 'open 채널')
@@ -86,11 +152,28 @@
                         console.log(error);
                         return;
                     }
-                    console.log(channels);
                 });
             },
             popupOpen: function () {
                 this.$store.commit('createPopup', true)
+            },
+            enterEvent: function () {
+                const openChannel = this.$store.getters.getSetOpenChannel
+                openChannel.sendUserMessage(this.inputData, null, null, function (message, error) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                });
+            },
+            createConnectionHandler: function(key) {
+                console.log(this.sbUtile)
+                const ChannelHandler = new this.sbUtile.ChannelHandler();
+
+                ChannelHandler.onMessageReceived = function(channel, message){
+                    console.log(channel, message);
+                };
+                this.sbUtile.addChannelHandler(key, ChannelHandler);
             }
         },
         created() {
@@ -98,7 +181,35 @@
             let sb = new sendBirdUtile({
                 appId: this.appKey
             })
-            this.sbUtile = sb;
+            this.sbUtile = sb
+            const ChannelHandler = new sb.ChannelHandler();
+
+            ChannelHandler.onMessageReceived = function (channel, message) { }; // Received a chat message.
+            ChannelHandler.onMessageUpdated = function (channel, message) { }; // Received an updated chat message.
+            ChannelHandler.onMessageDeleted = function (channel, msgId) { };  // When a message has been deleted.
+            ChannelHandler.onChannelChanged = function (channel) { }; // When a channel property has been changed. More information on the properties can be found below.
+            ChannelHandler.onChannelDeleted = function (channelUrl, channelType) { };  // When a channel has been deleted.
+            ChannelHandler.onReadReceiptUpdated = function (groupChannel) { }; // When read receipt has been updated.
+            ChannelHandler.onTypingStatusUpdated = function (groupChannel) { }; // When typing status has been updated.
+            ChannelHandler.onUserJoined = function (groupChannel, user) { }; // When a new member joined the group channel.
+            ChannelHandler.onUserLeft = function (groupChannel, user) { }; // When a member left the group channel.
+            ChannelHandler.onUserEntered = function (openChannel, user) { }; // When a new user entered the open channel.
+            ChannelHandler.onUserExited = function (openChannel, user) { }; // When a new user left the open channel.
+            ChannelHandler.onUserMuted = function (openChannel, user) { }; // When a user is muted on the open channel.
+            ChannelHandler.onUserUnmuted = function (openChannel, user) { }; // When a user is unmuted on the open channel.
+            ChannelHandler.onUserBanned = function (openChannel, user) { }; // When a user is banned on the open channel.
+            ChannelHandler.onUserUnbanned = function (openChannel, user) { };  // When a user is unbanned on the open channel.
+            ChannelHandler.onChannelFrozen = function (openChannel) { }; // When the open channel is frozen.
+            ChannelHandler.onChannelUnfrozen = function (openChannel) { }; // When the open channel is unfrozen.
+            ChannelHandler.onChannelHidden = function (groupChannel) { }; // When the group channel is hidden.
+
+            ChannelHandler.onMetaDataCreated = function (channel, metaData) { }; // When metaData is created.
+            ChannelHandler.onMetaDataUpdated = function (channel, metaData) { }; // When metaData is updated.
+            ChannelHandler.onMetaDataDeleted = function (channel, metaDataKeys) { }; // When metaData is deleted.
+            ChannelHandler.onMetaCountersCreated = function (channel, metaCounter) { }; // When metaCounter is created.
+            ChannelHandler.onMetaCountersUpdated = function (channel, metaCounter) { }; // When metaCounter is updated.
+            ChannelHandler.onMetaCountersDeleted = function (channel, metaCounterKeys) { }; // When metaCounter is deleted.
+            sb.addChannelHandler('123123qw', ChannelHandler);
         }
     }
 </script>
@@ -110,6 +221,7 @@
     .w-100 {
         width: 100%;
     }
+
     .w-h-100 {
         width: 100%;
         height: 100%;
@@ -119,7 +231,7 @@
         width: 80%;
         height: 700px;
         background-color: #6b8ace;
-        padding: 20px 10px;
+        padding: 20px;
     }
 
     .input-area-1 {
@@ -131,18 +243,58 @@
         width: 15%;
         height: 50px;
     }
+
     .area-2 {
         width: 20%;
         height: 100%;
         background-color: #c2caef;
         padding: 10px;
     }
+
     .area-3 {
-        width: 100%;
-        height: 35px;
-        color: #000000;
-        line-height: 35px;
+        width: 78%;
+        height: 100%;
+        background-color: #c2caef;
+        margin-left: 2%;
+        padding: 10px;
+        overflow: scroll;
     }
+
+    .area-4 {
+        width: 100%;
+        height: 45px;
+        background-color: #ffffff;
+        text-align: center;
+        font-size: 25px;
+    }
+
+    .area-5 {
+        width: 100%;
+        height: 450px;
+        background-color: #ffffff;
+        text-align: center;
+        font-size: 20px;
+        margin-top: 20px;
+        padding: 15px;
+        overflow: scroll;
+    }
+
+    .area-6 {
+        width: 100%;
+        height: 45px;
+        background-color: #ffffff;
+        border: 0;
+        padding: 0;
+        margin-top: 10px;
+        text-indent: 15px;
+    }
+
+    .area-7 {
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+    }
+
     .background-761 {
         background-color: #761b18;
     }
@@ -150,10 +302,22 @@
     [data-font='15'] {
         font-size: 15px;
     }
-    .font-color-fff {
-        color: #ffffff;
-    }
+
     .line-h-50 {
         line-height: 50px;
+    }
+
+    .listArea {
+        width: 100%;
+        height: 45px;
+        background-color: #1b4b72;
+        color: #ffffff;
+        text-align: center;
+        line-height: 45px;
+        font-size: 20px;
+    }
+
+    .top-10 {
+        margin-top: 10px;
     }
 </style>

@@ -807,7 +807,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(54)
+var listToStyles = __webpack_require__(55)
 
 /*
 type StyleObject = {
@@ -25282,7 +25282,7 @@ module.exports = XMLHttpRequest;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(18);
-module.exports = __webpack_require__(67);
+module.exports = __webpack_require__(68);
 
 
 /***/ }),
@@ -25297,11 +25297,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_sendbird__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_sendbird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_sendbird__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_SendBird__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_SendBird__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_SendBird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_SendBird__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_spinner_src_PacmanLoader__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_spinner_src_PacmanLoader__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_spinner_src_PacmanLoader___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_spinner_src_PacmanLoader__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreatPopup__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreatPopup__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreatPopup___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_CreatPopup__);
 
 /**
@@ -47704,7 +47704,7 @@ module.exports = function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__getters__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mutations__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mutations__ = __webpack_require__(51);
 
 
 
@@ -47715,7 +47715,9 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
 var state = {
     item: 'testItem',
     createPopup: false,
-    popupTitle: ''
+    popupTitle: '',
+    openChannelListItem: [],
+    setOpenChannel: {}
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
@@ -48683,23 +48685,52 @@ var index_esm = {
     },
     getPopupTitle: function getPopupTitle(state) {
         return state.popupTitle;
+    },
+    getOpenChannelListItem: function getOpenChannelListItem(state) {
+        return state.openChannelListItem;
+    },
+    getSetOpenChannel: function getSetOpenChannel(state) {
+        return state.setOpenChannel;
     }
 });
 
 /***/ }),
 /* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = ({
+    item: function item(state, data) {
+        state.item = data;
+    },
+    createPopup: function createPopup(state, data) {
+        state.createPopup = data;
+    },
+    popupTitle: function popupTitle(state, data) {
+        state.popupTitle = data;
+    },
+    openChannelListItem: function openChannelListItem(state, data) {
+        state.openChannelListItem = data;
+    },
+    setOpenChannel: function setOpenChannel(state, data) {
+        state.setOpenChannel = data;
+    }
+});
+
+/***/ }),
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(52)
+  __webpack_require__(53)
 }
 var normalizeComponent = __webpack_require__(7)
 /* script */
-var __vue_script__ = __webpack_require__(55)
+var __vue_script__ = __webpack_require__(56)
 /* template */
-var __vue_template__ = __webpack_require__(56)
+var __vue_template__ = __webpack_require__(57)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -48738,13 +48769,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(53);
+var content = __webpack_require__(54);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -48764,7 +48795,7 @@ if(false) {
 }
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)(false);
@@ -48772,13 +48803,13 @@ exports = module.exports = __webpack_require__(5)(false);
 
 
 // module
-exports.push([module.i, "\n#sendBirdContain[data-v-722e614c] {\n    width: 100%;\n}\n.w-100[data-v-722e614c] {\n    width: 100%;\n}\n.w-h-100[data-v-722e614c] {\n    width: 100%;\n    height: 100%;\n}\n#userInfoArea[data-v-722e614c] {\n    width: 80%;\n    height: 700px;\n    background-color: #6b8ace;\n    padding: 20px 10px;\n}\n.input-area-1[data-v-722e614c] {\n    width: 82%;\n    height: 50px;\n}\n.area-1[data-v-722e614c] {\n    width: 15%;\n    height: 50px;\n}\n.area-2[data-v-722e614c] {\n    width: 20%;\n    height: 100%;\n    background-color: #c2caef;\n    padding: 10px;\n}\n.area-3[data-v-722e614c] {\n    width: 100%;\n    height: 35px;\n    color: #000000;\n    line-height: 35px;\n}\n.background-761[data-v-722e614c] {\n    background-color: #761b18;\n}\n[data-font='15'][data-v-722e614c] {\n    font-size: 15px;\n}\n.font-color-fff[data-v-722e614c] {\n    color: #ffffff;\n}\n.line-h-50[data-v-722e614c] {\n    line-height: 50px;\n}\n", ""]);
+exports.push([module.i, "\n#sendBirdContain[data-v-722e614c] {\n    width: 100%;\n}\n.w-100[data-v-722e614c] {\n    width: 100%;\n}\n.w-h-100[data-v-722e614c] {\n    width: 100%;\n    height: 100%;\n}\n#userInfoArea[data-v-722e614c] {\n    width: 80%;\n    height: 700px;\n    background-color: #6b8ace;\n    padding: 20px;\n}\n.input-area-1[data-v-722e614c] {\n    width: 82%;\n    height: 50px;\n}\n.area-1[data-v-722e614c] {\n    width: 15%;\n    height: 50px;\n}\n.area-2[data-v-722e614c] {\n    width: 20%;\n    height: 100%;\n    background-color: #c2caef;\n    padding: 10px;\n}\n.area-3[data-v-722e614c] {\n    width: 78%;\n    height: 100%;\n    background-color: #c2caef;\n    margin-left: 2%;\n    padding: 10px;\n    overflow: scroll;\n}\n.area-4[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #ffffff;\n    text-align: center;\n    font-size: 25px;\n}\n.area-5[data-v-722e614c] {\n    width: 100%;\n    height: 450px;\n    background-color: #ffffff;\n    text-align: center;\n    font-size: 20px;\n    margin-top: 20px;\n    padding: 15px;\n    overflow: scroll;\n}\n.area-6[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #ffffff;\n    border: 0;\n    padding: 0;\n    margin-top: 10px;\n    text-indent: 15px;\n}\n.area-7[data-v-722e614c] {\n    width: 100%;\n    height: 30px;\n    line-height: 30px;\n}\n.background-761[data-v-722e614c] {\n    background-color: #761b18;\n}\n[data-font='15'][data-v-722e614c] {\n    font-size: 15px;\n}\n.line-h-50[data-v-722e614c] {\n    line-height: 50px;\n}\n.listArea[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #1b4b72;\n    color: #ffffff;\n    text-align: center;\n    line-height: 45px;\n    font-size: 20px;\n}\n.top-10[data-v-722e614c] {\n    margin-top: 10px;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports) {
 
 /**
@@ -48811,11 +48842,31 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -48860,11 +48911,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             sbUtile: {},
+            handler: {},
             userId: 'jkkim',
             viewData: {
-                menu: false
+                menu: false,
+                channelMenu: true,
+                chat: false
             },
-            popupTitle: ''
+            popupTitle: '',
+            inputData: '',
+            totalMsg: []
         };
     },
 
@@ -48875,20 +48931,60 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (error) {
                     console.log(error);
                 } else {
-                    console.log(user);
                     that.menu = true;
                 }
             });
         },
         openChannelList: function openChannelList() {
+            var that = this.$store;
             var openChannelList = this.sbUtile.OpenChannel.createOpenChannelListQuery();
             openChannelList.next(function (channels, error) {
                 if (error) {
                     console.log(error);
                     return;
                 }
-                console.log(channels);
+                that.commit('openChannelListItem', channels);
             });
+        },
+        openChannelEnter: function openChannelEnter(index) {
+            var thatStore = this.$store;
+            var thattTtalMsg = this.totalMsg;
+            var openListItem = thatStore.getters.getOpenChannelListItem;
+            var indexItem = openListItem[index];
+            var indexUrl = indexItem.url;
+            var thatViewData = this.viewData;
+            var thatHandler = this.createConnectionHandler;
+            this.sbUtile.OpenChannel.getChannel(indexUrl, function (channel, error) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                channel.enter(function (response, error) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    thatViewData.chat = true;
+                    thatStore.commit("setOpenChannel", channel);
+                });
+                var messageListQuery = channel.createPreviousMessageListQuery();
+                messageListQuery.load(30, true, function (messageList, error) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    messageList.forEach(function (data) {
+                        thattTtalMsg.unshift({
+                            userId: data._sender.userId,
+                            message: data.message
+                        });
+                    });
+                });
+            });
+            /**
+             * Handler
+             * */
+            thatHandler('123123qw');
         },
         openChannelAdd: function openChannelAdd() {
             this.$store.commit('popupTitle', 'open 채널');
@@ -48905,11 +49001,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     console.log(error);
                     return;
                 }
-                console.log(channels);
             });
         },
         popupOpen: function popupOpen() {
             this.$store.commit('createPopup', true);
+        },
+        enterEvent: function enterEvent() {
+            var openChannel = this.$store.getters.getSetOpenChannel;
+            openChannel.sendUserMessage(this.inputData, null, null, function (message, error) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+            });
+        },
+        createConnectionHandler: function createConnectionHandler(key) {
+            console.log(this.sbUtile);
+            var ChannelHandler = new this.sbUtile.ChannelHandler();
+
+            ChannelHandler.onMessageReceived = function (channel, message) {
+                console.log(channel, message);
+            };
+            this.sbUtile.addChannelHandler(key, ChannelHandler);
         }
     },
     created: function created() {
@@ -48918,11 +49031,39 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             appId: this.appKey
         });
         this.sbUtile = sb;
+        var ChannelHandler = new sb.ChannelHandler();
+
+        ChannelHandler.onMessageReceived = function (channel, message) {}; // Received a chat message.
+        ChannelHandler.onMessageUpdated = function (channel, message) {}; // Received an updated chat message.
+        ChannelHandler.onMessageDeleted = function (channel, msgId) {}; // When a message has been deleted.
+        ChannelHandler.onChannelChanged = function (channel) {}; // When a channel property has been changed. More information on the properties can be found below.
+        ChannelHandler.onChannelDeleted = function (channelUrl, channelType) {}; // When a channel has been deleted.
+        ChannelHandler.onReadReceiptUpdated = function (groupChannel) {}; // When read receipt has been updated.
+        ChannelHandler.onTypingStatusUpdated = function (groupChannel) {}; // When typing status has been updated.
+        ChannelHandler.onUserJoined = function (groupChannel, user) {}; // When a new member joined the group channel.
+        ChannelHandler.onUserLeft = function (groupChannel, user) {}; // When a member left the group channel.
+        ChannelHandler.onUserEntered = function (openChannel, user) {}; // When a new user entered the open channel.
+        ChannelHandler.onUserExited = function (openChannel, user) {}; // When a new user left the open channel.
+        ChannelHandler.onUserMuted = function (openChannel, user) {}; // When a user is muted on the open channel.
+        ChannelHandler.onUserUnmuted = function (openChannel, user) {}; // When a user is unmuted on the open channel.
+        ChannelHandler.onUserBanned = function (openChannel, user) {}; // When a user is banned on the open channel.
+        ChannelHandler.onUserUnbanned = function (openChannel, user) {}; // When a user is unbanned on the open channel.
+        ChannelHandler.onChannelFrozen = function (openChannel) {}; // When the open channel is frozen.
+        ChannelHandler.onChannelUnfrozen = function (openChannel) {}; // When the open channel is unfrozen.
+        ChannelHandler.onChannelHidden = function (groupChannel) {}; // When the group channel is hidden.
+
+        ChannelHandler.onMetaDataCreated = function (channel, metaData) {}; // When metaData is created.
+        ChannelHandler.onMetaDataUpdated = function (channel, metaData) {}; // When metaData is updated.
+        ChannelHandler.onMetaDataDeleted = function (channel, metaDataKeys) {}; // When metaData is deleted.
+        ChannelHandler.onMetaCountersCreated = function (channel, metaCounter) {}; // When metaCounter is created.
+        ChannelHandler.onMetaCountersUpdated = function (channel, metaCounter) {}; // When metaCounter is updated.
+        ChannelHandler.onMetaCountersDeleted = function (channel, metaCounterKeys) {}; // When metaCounter is deleted.
+        sb.addChannelHandler('123123qw', ChannelHandler);
     }
 });
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -48972,7 +49113,7 @@ var render = function() {
                           attrs: { "data-font": "15" },
                           on: { click: _vm.connectBtn }
                         },
-                        [_vm._v("확인")]
+                        [_vm._v("확인\n                        ")]
                       )
                     ])
                   : _vm._e(),
@@ -49001,6 +49142,100 @@ var render = function() {
                             ])
                           ])
                         ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "area-3 float-left" }, [
+                        !_vm.viewData.chat
+                          ? _c(
+                              "div",
+                              _vm._l(
+                                _vm.$store.getters.getOpenChannelListItem,
+                                function(item, index) {
+                                  return _c(
+                                    "div",
+                                    {
+                                      staticClass: "listArea",
+                                      class: { "top-10": index !== 0 },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.openChannelEnter(index)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "#" +
+                                          _vm._s(item.name) +
+                                          "\n                                "
+                                      )
+                                    ]
+                                  )
+                                }
+                              )
+                            )
+                          : _c("div", { staticClass: "w-h-100" }, [
+                              _c("div", { staticClass: "area-4" }, [
+                                _vm._v(
+                                  "#" +
+                                    _vm._s(
+                                      _vm.$store.getters.getSetOpenChannel.name
+                                    )
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "area-5" },
+                                _vm._l(_vm.totalMsg, function(item, index) {
+                                  return _c("div", { staticClass: "area-7" }, [
+                                    _vm._v(
+                                      "\n                                        " +
+                                        _vm._s(item.userId) +
+                                        ": " +
+                                        _vm._s(item.message) +
+                                        "\n                                    "
+                                    )
+                                  ])
+                                })
+                              ),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.inputData,
+                                    expression: "inputData"
+                                  }
+                                ],
+                                staticClass: "area-6",
+                                attrs: { placeholder: "입력..." },
+                                domProps: { value: _vm.inputData },
+                                on: {
+                                  keydown: function($event) {
+                                    if (
+                                      !("button" in $event) &&
+                                      _vm._k(
+                                        $event.keyCode,
+                                        "enter",
+                                        13,
+                                        $event.key,
+                                        "Enter"
+                                      )
+                                    ) {
+                                      return null
+                                    }
+                                    return _vm.enterEvent($event)
+                                  },
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.inputData = $event.target.value
+                                  }
+                                }
+                              })
+                            ])
                       ])
                     ])
                   : _vm._e()
@@ -49011,7 +49246,7 @@ var render = function() {
       ]),
       _vm._v(" "),
       _vm.$store.getters.getCreatePopup
-        ? _c("creat-popup", { attrs: { title: "test" } })
+        ? _c("creat-popup", { attrs: { sbUtile: _vm.sbUtile } })
         : _vm._e()
     ],
     1
@@ -49028,19 +49263,19 @@ if (false) {
 }
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(58)
+  __webpack_require__(59)
 }
 var normalizeComponent = __webpack_require__(7)
 /* script */
-var __vue_script__ = __webpack_require__(60)
+var __vue_script__ = __webpack_require__(61)
 /* template */
-var __vue_template__ = __webpack_require__(61)
+var __vue_template__ = __webpack_require__(62)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -49079,13 +49314,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(59);
+var content = __webpack_require__(60);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -49105,7 +49340,7 @@ if(false) {
 }
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)(false);
@@ -49119,7 +49354,7 @@ exports.push([module.i, "\n.v-spinner\n{\n    text-align: center;\n}\n\n/*TODO c
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49226,7 +49461,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -49282,19 +49517,19 @@ if (false) {
 }
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(63)
+  __webpack_require__(64)
 }
 var normalizeComponent = __webpack_require__(7)
 /* script */
-var __vue_script__ = __webpack_require__(65)
+var __vue_script__ = __webpack_require__(66)
 /* template */
-var __vue_template__ = __webpack_require__(66)
+var __vue_template__ = __webpack_require__(67)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -49333,13 +49568,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(64);
+var content = __webpack_require__(65);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -49359,7 +49594,7 @@ if(false) {
 }
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(5)(false);
@@ -49373,7 +49608,7 @@ exports.push([module.i, "\n#creatTop[data-v-db05be64] {\n    position: absolute;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -49402,26 +49637,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "CreatPopup",
     props: {
-        title: {
-            type: String,
-            default: 'title 입력'
+        sbUtile: {
+            type: Object
         }
     },
+    data: function data() {
+        return {
+            chname: ''
+        };
+    },
+
     methods: {
         btn1: function btn1() {
             this.$store.commit('createPopup', false);
         },
         btn2: function btn2() {
-            this.$store.commit('createPopup', false);
+            console.log(this.sbUtile.OpenChannel.createChannel);
+            var that = this.$store;
+            this.sbUtile.OpenChannel.createChannel(this.chname, null, null, function (createdChannel, error) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                // onCreated
+                console.log(createdChannel);
+                that.commit('createPopup', false);
+            });
         }
-    },
-    created: function created() {
-        console.log(this.$store.getters.getItem);
     }
 });
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -49437,7 +49684,27 @@ var render = function() {
           _c("div", { attrs: { id: "poupArae" } }, [
             _c("h1", [_vm._v(_vm._s(_vm.$store.getters.getPopupTitle))]),
             _vm._v(" "),
-            _c("input", { staticClass: "input-area-1 text-center" }),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.chname,
+                  expression: "chname"
+                }
+              ],
+              staticClass: "input-area-1 text-center",
+              attrs: { placeholder: "채널 name" },
+              domProps: { value: _vm.chname },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.chname = $event.target.value
+                }
+              }
+            }),
             _vm._v(" "),
             _c("div", { staticClass: "btnArea" }, [
               _c(
@@ -49469,30 +49736,10 @@ if (false) {
 }
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony default export */ __webpack_exports__["a"] = ({
-    item: function item(state, data) {
-        state.item = data;
-    },
-    createPopup: function createPopup(state, data) {
-        state.createPopup = data;
-    },
-    popupTitle: function popupTitle(state, data) {
-        state.popupTitle = data;
-    }
-});
 
 /***/ })
 /******/ ]);

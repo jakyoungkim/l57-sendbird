@@ -7,5 +7,11 @@ export default {
     },
     getPopupTitle: (state) => {
         return state.popupTitle
+    },
+    getOpenChannelListItem: (state) => {
+        return state.openChannelListItem
+    },
+    getSetOpenChannel: (state) => {
+        return state.setOpenChannel
     }
 };

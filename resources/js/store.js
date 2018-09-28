@@ -8,7 +8,9 @@ Vue.use(Vuex);
 const state = {
     item: 'testItem',
     createPopup: false,
-    popupTitle: ''
+    popupTitle: '',
+    openChannelListItem: [],
+    setOpenChannel: {}
 };
 
 export default new Vuex.Store({
