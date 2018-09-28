@@ -158,20 +158,31 @@
                 this.$store.commit('createPopup', true)
             },
             enterEvent: function () {
+                const thattTtalMsg = this.totalMsg
                 const openChannel = this.$store.getters.getSetOpenChannel
                 openChannel.sendUserMessage(this.inputData, null, null, function (message, error) {
                     if (error) {
                         console.error(error);
                         return;
                     }
+                    console.log(message)
+                    thattTtalMsg.push({
+                        userId: message._sender.userId,
+                        message: message.message
+                    })
                 });
             },
             createConnectionHandler: function(key) {
-                console.log(this.sbUtile)
+                const thattTtalMsg = this.totalMsg
+                console.log(thattTtalMsg)
                 const ChannelHandler = new this.sbUtile.ChannelHandler();
-
                 ChannelHandler.onMessageReceived = function(channel, message){
-                    console.log(channel, message);
+                    console.log(channel)
+                    console.log(message)
+                    thattTtalMsg.push({
+                        userId: message._sender.userId,
+                        message: message.message
+                    })
                 };
                 this.sbUtile.addChannelHandler(key, ChannelHandler);
             }
@@ -182,34 +193,6 @@
                 appId: this.appKey
             })
             this.sbUtile = sb
-            const ChannelHandler = new sb.ChannelHandler();
-
-            ChannelHandler.onMessageReceived = function (channel, message) { }; // Received a chat message.
-            ChannelHandler.onMessageUpdated = function (channel, message) { }; // Received an updated chat message.
-            ChannelHandler.onMessageDeleted = function (channel, msgId) { };  // When a message has been deleted.
-            ChannelHandler.onChannelChanged = function (channel) { }; // When a channel property has been changed. More information on the properties can be found below.
-            ChannelHandler.onChannelDeleted = function (channelUrl, channelType) { };  // When a channel has been deleted.
-            ChannelHandler.onReadReceiptUpdated = function (groupChannel) { }; // When read receipt has been updated.
-            ChannelHandler.onTypingStatusUpdated = function (groupChannel) { }; // When typing status has been updated.
-            ChannelHandler.onUserJoined = function (groupChannel, user) { }; // When a new member joined the group channel.
-            ChannelHandler.onUserLeft = function (groupChannel, user) { }; // When a member left the group channel.
-            ChannelHandler.onUserEntered = function (openChannel, user) { }; // When a new user entered the open channel.
-            ChannelHandler.onUserExited = function (openChannel, user) { }; // When a new user left the open channel.
-            ChannelHandler.onUserMuted = function (openChannel, user) { }; // When a user is muted on the open channel.
-            ChannelHandler.onUserUnmuted = function (openChannel, user) { }; // When a user is unmuted on the open channel.
-            ChannelHandler.onUserBanned = function (openChannel, user) { }; // When a user is banned on the open channel.
-            ChannelHandler.onUserUnbanned = function (openChannel, user) { };  // When a user is unbanned on the open channel.
-            ChannelHandler.onChannelFrozen = function (openChannel) { }; // When the open channel is frozen.
-            ChannelHandler.onChannelUnfrozen = function (openChannel) { }; // When the open channel is unfrozen.
-            ChannelHandler.onChannelHidden = function (groupChannel) { }; // When the group channel is hidden.
-
-            ChannelHandler.onMetaDataCreated = function (channel, metaData) { }; // When metaData is created.
-            ChannelHandler.onMetaDataUpdated = function (channel, metaData) { }; // When metaData is updated.
-            ChannelHandler.onMetaDataDeleted = function (channel, metaDataKeys) { }; // When metaData is deleted.
-            ChannelHandler.onMetaCountersCreated = function (channel, metaCounter) { }; // When metaCounter is created.
-            ChannelHandler.onMetaCountersUpdated = function (channel, metaCounter) { }; // When metaCounter is updated.
-            ChannelHandler.onMetaCountersDeleted = function (channel, metaCounterKeys) { }; // When metaCounter is deleted.
-            sb.addChannelHandler('123123qw', ChannelHandler);
         }
     }
 </script>
