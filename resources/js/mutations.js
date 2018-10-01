@@ -13,5 +13,8 @@ export default {
     },
     setOpenChannel(state, data) {
         state.setOpenChannel = data
+    },
+    channelMsg(state, data) {
+        state.channelMsg = data
     }
 }

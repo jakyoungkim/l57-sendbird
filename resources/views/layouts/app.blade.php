@@ -77,7 +77,7 @@
             @yield('content')
             @section('sidebar')
             @show
-            @section('endArea')
+            @section('sendbird')
             @show
         </main>
     </div>

@@ -15,6 +15,7 @@ import store from './store';
 import sbcomponent from './components/SendBird'
 import Spinner from 'vue-spinner/src/PacmanLoader'
 import creatpopup from './components/CreatPopup'
+import SimpleSendbird from './components/SimpleSendbird'
 /**
  * custom utile
  * */
@@ -30,6 +31,7 @@ Vue.prototype.$store = store;
 Vue.component('send-bird', sbcomponent);
 Vue.component('spinner', Spinner);
 Vue.component('creat-popup', creatpopup);
+Vue.component('simple-sendbird', SimpleSendbird)
 const app =new Vue({
     el: '#app',
 });

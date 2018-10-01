@@ -10,7 +10,8 @@ const state = {
     createPopup: false,
     popupTitle: '',
     openChannelListItem: [],
-    setOpenChannel: {}
+    setOpenChannel: {},
+    channelMsg: []
 };
 
 export default new Vuex.Store({

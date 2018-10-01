@@ -24,13 +24,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data['name'] = '076F2CD7-A154-4522-8415-112D6CDB2248';
+        $data['key'] = '076F2CD7-A154-4522-8415-112D6CDB2248';
         return view('home', $data);
     }
-    public function end()
+    public function sendbird()
     {
-        $data['name'] = 'kim ja kyoung';
-        $data['old'] = 29;
-        return view( 'end', $data);
+        $data['key'] = '076F2CD7-A154-4522-8415-112D6CDB2248';
+        return view( 'sendbird', $data);
     }
 }

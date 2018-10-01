@@ -13,5 +13,8 @@ export default {
     },
     getSetOpenChannel: (state) => {
         return state.setOpenChannel
+    },
+    getChannelMsg: (state) => {
+        return state.channelMsg
     }
 };

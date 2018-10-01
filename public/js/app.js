@@ -25303,6 +25303,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue_spinner_src_PacmanLoader___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue_spinner_src_PacmanLoader__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreatPopup__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreatPopup___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_CreatPopup__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_SimpleSendbird__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_SimpleSendbird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__components_SimpleSendbird__);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -25317,6 +25319,7 @@ __webpack_require__(19);
 /**
  * Component
  * */
+
 
 
 
@@ -25335,6 +25338,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.prototype.$store = __WEBPACK_IMPORTE
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('send-bird', __WEBPACK_IMPORTED_MODULE_4__components_SendBird___default.a);
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('spinner', __WEBPACK_IMPORTED_MODULE_5_vue_spinner_src_PacmanLoader___default.a);
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('creat-popup', __WEBPACK_IMPORTED_MODULE_6__components_CreatPopup___default.a);
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.component('simple-sendbird', __WEBPACK_IMPORTED_MODULE_7__components_SimpleSendbird___default.a);
 var app = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a({
   el: '#app'
 });
@@ -47649,10 +47653,104 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_sendbird__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_sendbird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_sendbird__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store__ = __webpack_require__(48);
+var _this = this;
+
+
+
+
 /* harmony default export */ __webpack_exports__["a"] = ({
-    testUtile: function testUtile(data) {
-        console.log(data);
-        alert(data);
+    sb: function sb() {
+        return {
+            utile: __WEBPACK_IMPORTED_MODULE_0_sendbird___default.a,
+            reset: function reset(utile, key) {
+                return new utile({
+                    appId: key
+                });
+            },
+            connetion: function connetion(utile, user) {
+                utile.connect(user, function (user, error) {
+                    if (error) {
+                        console.log(error);
+                    } else {}
+                });
+            },
+            openChannelList: function openChannelList(utile) {
+                var openChannelList = utile.OpenChannel.createOpenChannelListQuery();
+                return new Promise(function (resolve, reject) {
+                    openChannelList.next(function (channels, error) {
+                        if (error) {
+                            console.log(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve(channels);
+                    });
+                });
+            },
+            openChannelEnter: function openChannelEnter(utile, channel) {
+                var that = _this;
+                return new Promise(function (resolve, reject) {
+                    utile.OpenChannel.getChannel(channel.url, function (channel, error) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        channel.enter(function (response, error) {
+                            if (error) {
+                                console.error(error);
+                                return;
+                            }
+                        });
+                        var messageListQuery = channel.createPreviousMessageListQuery();
+                        messageListQuery.load(30, true, function (messageList, error) {
+                            if (error) {
+                                console.error(error);
+                                return;
+                            }
+                            resolve({
+                                msg: messageList.reverse(),
+                                channel: channel
+                            });
+                        });
+                    });
+                    var ChannelHandler = new utile.ChannelHandler();
+                    ChannelHandler.onMessageReceived = function (channel, message) {
+                        __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getChannelMsg.push(message);
+                    };
+                    utile.addChannelHandler(_this.a.devUser().user, ChannelHandler);
+                });
+            }
+        };
+    },
+    devUser: function devUser() {
+        var date = new Date();
+        var devUser = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        return {
+            user: "dev:" + devUser,
+            index: devUser
+        };
+    },
+    objectListSearch: function objectListSearch(list, object) {
+        var result = false;
+        var searchItem = 0;
+        list.forEach(function (item, index, arr) {
+            if (item[object.key] === object.value) {
+                result = true;
+                searchItem = arr[index];
+            }
+        });
+        return {
+            result: result,
+            searchItem: searchItem
+
+        };
+    },
+    gotoBottom: function gotoBottom(id) {
+        var element = document.getElementById(id);
+        element.scrollTop = element.scrollHeight;
     }
 });
 
@@ -47717,7 +47815,8 @@ var state = {
     createPopup: false,
     popupTitle: '',
     openChannelListItem: [],
-    setOpenChannel: {}
+    setOpenChannel: {},
+    channelMsg: []
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
@@ -48691,6 +48790,9 @@ var index_esm = {
     },
     getSetOpenChannel: function getSetOpenChannel(state) {
         return state.setOpenChannel;
+    },
+    getChannelMsg: function getChannelMsg(state) {
+        return state.channelMsg;
     }
 });
 
@@ -48714,6 +48816,9 @@ var index_esm = {
     },
     setOpenChannel: function setOpenChannel(state, data) {
         state.setOpenChannel = data;
+    },
+    channelMsg: function channelMsg(state, data) {
+        state.channelMsg = data;
     }
 });
 
@@ -48803,7 +48908,7 @@ exports = module.exports = __webpack_require__(5)(false);
 
 
 // module
-exports.push([module.i, "\n#sendBirdContain[data-v-722e614c] {\n    width: 100%;\n}\n.w-100[data-v-722e614c] {\n    width: 100%;\n}\n.w-h-100[data-v-722e614c] {\n    width: 100%;\n    height: 100%;\n}\n#userInfoArea[data-v-722e614c] {\n    width: 80%;\n    height: 700px;\n    background-color: #6b8ace;\n    padding: 20px;\n}\n.input-area-1[data-v-722e614c] {\n    width: 82%;\n    height: 50px;\n}\n.area-1[data-v-722e614c] {\n    width: 15%;\n    height: 50px;\n}\n.area-2[data-v-722e614c] {\n    width: 20%;\n    height: 100%;\n    background-color: #c2caef;\n    padding: 10px;\n}\n.area-3[data-v-722e614c] {\n    width: 78%;\n    height: 100%;\n    background-color: #c2caef;\n    margin-left: 2%;\n    padding: 10px;\n    overflow: scroll;\n}\n.area-4[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #ffffff;\n    text-align: center;\n    font-size: 25px;\n}\n.area-5[data-v-722e614c] {\n    width: 100%;\n    height: 450px;\n    background-color: #ffffff;\n    text-align: center;\n    font-size: 20px;\n    margin-top: 20px;\n    padding: 15px;\n    overflow: scroll;\n}\n.area-6[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #ffffff;\n    border: 0;\n    padding: 0;\n    margin-top: 10px;\n    text-indent: 15px;\n}\n.area-7[data-v-722e614c] {\n    width: 100%;\n    height: 30px;\n    line-height: 30px;\n}\n.background-761[data-v-722e614c] {\n    background-color: #761b18;\n}\n[data-font='15'][data-v-722e614c] {\n    font-size: 15px;\n}\n.line-h-50[data-v-722e614c] {\n    line-height: 50px;\n}\n.listArea[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #1b4b72;\n    color: #ffffff;\n    text-align: center;\n    line-height: 45px;\n    font-size: 20px;\n}\n.top-10[data-v-722e614c] {\n    margin-top: 10px;\n}\n", ""]);
+exports.push([module.i, "\n#sendBirdContain[data-v-722e614c] {\n    width: 100%;\n}\n.w-100[data-v-722e614c] {\n    width: 100%;\n}\n.w-h-100[data-v-722e614c] {\n    width: 100%;\n    height: 100%;\n}\n#userInfoArea[data-v-722e614c] {\n    width: 80%;\n    height: 700px;\n    background-color: #6b8ace;\n    padding: 20px;\n}\n.input-area-1[data-v-722e614c] {\n    width: 82%;\n    height: 50px;\n}\n.area-1[data-v-722e614c] {\n    width: 15%;\n    height: 50px;\n}\n.area-2[data-v-722e614c] {\n    width: 20%;\n    height: 100%;\n    background-color: #c2caef;\n    padding: 10px;\n}\n.area-3[data-v-722e614c] {\n    width: 78%;\n    height: 100%;\n    background-color: #c2caef;\n    margin-left: 2%;\n    padding: 10px;\n    overflow: scroll;\n}\n.area-4[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #ffffff;\n    text-align: center;\n    font-size: 25px;\n}\n.area-5[data-v-722e614c] {\n    width: 100%;\n    height: 450px;\n    background-color: #ffffff;\n    text-align: center;\n    font-size: 20px;\n    margin-top: 20px;\n    padding: 15px;\n    overflow: scroll;\n}\n.area-6[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #ffffff;\n    border: 0;\n    padding: 0;\n    margin-top: 10px;\n    text-indent: 15px;\n}\n.area-7[data-v-722e614c] {\n    width: 100%;\n    height: 30px;\n    line-height: 30px;\n    text-align: left;\n}\n.area-8[data-v-722e614c] {\n    width: 100px;\n    height: 25px;\n    float: right;\n    line-height: 25px;\n    background-color: #1b1e21;\n    margin-top: 10px;\n    border-radius: 10px;\n    color: #ffffff;\n}\n.background-761[data-v-722e614c] {\n    background-color: #761b18;\n}\n[data-font='15'][data-v-722e614c] {\n    font-size: 15px;\n}\n.line-h-50[data-v-722e614c] {\n    line-height: 50px;\n}\n.listArea[data-v-722e614c] {\n    width: 100%;\n    height: 45px;\n    background-color: #1b4b72;\n    color: #ffffff;\n    text-align: center;\n    line-height: 45px;\n    font-size: 20px;\n}\n.top-10[data-v-722e614c] {\n    margin-top: 10px;\n}\n", ""]);
 
 // exports
 
@@ -48900,6 +49005,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: 'SendBird',
@@ -48920,7 +49027,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             popupTitle: '',
             inputData: '',
-            totalMsg: []
+            totalMsg: [],
+            openChannelItem: {}
         };
     },
 
@@ -48951,6 +49059,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var thattTtalMsg = this.totalMsg;
             var openListItem = thatStore.getters.getOpenChannelListItem;
             var indexItem = openListItem[index];
+            //open channel item
+            this.openChannelItem = indexItem;
             var indexUrl = indexItem.url;
             var thatViewData = this.viewData;
             var thatHandler = this.createConnectionHandler;
@@ -48986,6 +49096,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
              * */
             thatHandler('123123qw');
         },
+        openChannelExit: function openChannelExit() {
+            var that = this;
+            console.log("exit", this.openChannelItem);
+            var indexUrl = this.openChannelItem.url;
+            this.sbUtile.OpenChannel.getChannel(indexUrl, function (channel, error) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                channel.exit(function (response, error) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    that.viewData.chat = false;
+                });
+            });
+        },
         openChannelAdd: function openChannelAdd() {
             this.$store.commit('popupTitle', 'open 채널');
             this.popupOpen();
@@ -49017,13 +49145,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(message);
                 thattTtalMsg.push({
                     userId: message._sender.userId,
-                    message: message.message
+                    message: message.message,
+                    user: 'me'
                 });
             });
         },
         createConnectionHandler: function createConnectionHandler(key) {
             var thattTtalMsg = this.totalMsg;
-            console.log(thattTtalMsg);
             var ChannelHandler = new this.sbUtile.ChannelHandler();
             ChannelHandler.onMessageReceived = function (channel, message) {
                 console.log(channel);
@@ -49170,15 +49298,22 @@ var render = function() {
                                 "div",
                                 { staticClass: "area-5" },
                                 _vm._l(_vm.totalMsg, function(item, index) {
-                                  return _c("div", { staticClass: "area-7" }, [
-                                    _vm._v(
-                                      "\n                                        " +
-                                        _vm._s(item.userId) +
-                                        ": " +
-                                        _vm._s(item.message) +
-                                        "\n                                    "
-                                    )
-                                  ])
+                                  return _c(
+                                    "div",
+                                    {
+                                      staticClass: "area-7",
+                                      class: { "my-color": item.user === "me" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                                        " +
+                                          _vm._s(item.userId) +
+                                          ": " +
+                                          _vm._s(item.message) +
+                                          "\n                                    "
+                                      )
+                                    ]
+                                  )
                                 })
                               ),
                               _vm._v(" "),
@@ -49217,7 +49352,16 @@ var render = function() {
                                     _vm.inputData = $event.target.value
                                   }
                                 }
-                              })
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "area-8",
+                                  on: { click: _vm.openChannelExit }
+                                },
+                                [_vm._v("나가기")]
+                              )
                             ])
                       ])
                     ])
@@ -49723,6 +49867,314 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 69 */,
+/* 70 */,
+/* 71 */,
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(73)
+}
+var normalizeComponent = __webpack_require__(7)
+/* script */
+var __vue_script__ = __webpack_require__(75)
+/* template */
+var __vue_template__ = __webpack_require__(76)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-b3bc4484"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/SimpleSendbird.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-b3bc4484", Component.options)
+  } else {
+    hotAPI.reload("data-v-b3bc4484", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(74);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(6)("5bce4ecd", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b3bc4484\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./SimpleSendbird.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b3bc4484\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./SimpleSendbird.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(5)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.w-h-100[data-v-b3bc4484] {\n    width: 100%;\n}\n#chatArea[data-v-b3bc4484] {\n    width: 100%;\n}\n#chatContain[data-v-b3bc4484] {\n    width: 300px;\n    height: 600px;\n    background-color: #c1f5da;\n    display: inline-block;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(1) {\n    padding: 5px 0;\n    height: 47px;\n    border-bottom: 1px solid #c8c8c8;\n    line-height: 47px;\n    font-size: 18px;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(2) {\n    height: 520px;\n    padding: 10px;\n    overflow: scroll;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(2)::-webkit-scrollbar {\n\n    display: none;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(3) {\n    width: 100%;\n    height: 47px;\n    border: none;\n    background-color: #e8e7e7;\n    padding: 5px 7px;\n}\n#chatInput[data-v-b3bc4484] {\n    width: 215px;\n    height: 100%;\n    border: none;\n    float: left;\n    text-indent: 10px;\n}\n#chatBtn[data-v-b3bc4484] {\n    width: 65px;\n    height: 100%;\n    float: right;\n}\n.userMsg[data-v-b3bc4484] {\n    background-color: #ffffff;\n    border-radius: 4px;\n    padding: 4px;\n    margin-left: 5px;\n    max-width: 178px;\n    text-align: left;\n    word-wrap: break-word\n}\n.t-10[data-v-b3bc4484] {\n    margin-top: 10px;\n}\n.b-y[data-v-b3bc4484] {\n    background-color: #ffe817;\n}\n.dis-i-b[data-v-b3bc4484] {\n    display: inline-block;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 75 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "SimpleSendbird",
+    props: {
+        appKey: {
+            type: String
+        }
+    },
+    data: function data() {
+        return {
+            my: '',
+            sb: {},
+            channel: {},
+            title: '',
+            msgList: [],
+            inputData: ''
+        };
+    },
+
+    methods: {
+        enterEvent: function enterEvent() {
+            var that = this;
+            if (this.inputData.length <= 0) return;
+            this.channel.sendUserMessage(this.inputData, null, null, function (message, error) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                that.$store.getters.getChannelMsg.push(message);
+                that.inputData = "";
+            });
+        }
+    },
+    created: function created() {
+        var _this = this;
+
+        /**
+         * reset
+         * */
+        var utiles = this.$utile;
+        var sb = utiles.sb();
+        this.sb = sb.reset(sb.utile, this.appKey);
+        /**
+         * connetion
+         **/
+        //임시 User 생성
+        var devUser = this.$utile.devUser();
+        this.my = devUser.user;
+        sb.connetion(this.sb, devUser.user);
+        /**
+         * Channel add or Enter
+         * */
+        sb.openChannelList(this.sb).then(function (value) {
+            var channelName = '채널1';
+            _this.title = channelName;
+            var result = utiles.objectListSearch(value, {
+                key: 'name',
+                value: channelName
+            });
+            if (result.result) {
+                //접속
+                sb.openChannelEnter(_this.sb, result.searchItem).then(function (value) {
+                    _this.$store.commit("channelMsg", value.msg);
+                    _this.channel = value.channel;
+                });
+            } else {
+                //채널 생성 및 접속
+            }
+        });
+    },
+    updated: function updated() {
+        this.$utile.gotoBottom("msgArea");
+    }
+});
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("table", { attrs: { id: "chatArea" } }, [
+      _c("tr", [
+        _c("td", { staticClass: "w-h-100 text-center" }, [
+          _c("div", { attrs: { id: "chatContain" } }, [
+            _c("div", { staticClass: "font-weight-bold" }, [
+              _vm._v(_vm._s(_vm.title))
+            ]),
+            _vm._v(" "),
+            _c("div", { attrs: { id: "msgArea" } }, [
+              _c(
+                "div",
+                _vm._l(_vm.$store.getters.getChannelMsg, function(item, index) {
+                  return _c(
+                    "div",
+                    {
+                      staticClass: "w-100",
+                      class: {
+                        "t-10": index !== 0,
+                        "text-right": _vm.my === item._sender.userId,
+                        "text-left": _vm.my !== item._sender.userId
+                      }
+                    },
+                    [
+                      _c("div", { staticClass: "dis-i-b" }, [
+                        _vm._v(_vm._s(item._sender.userId) + " :")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "userMsg font-weight-bold dis-i-b",
+                          class: { "b-y": _vm.my === item._sender.userId }
+                        },
+                        [_vm._v(_vm._s(item.message))]
+                      )
+                    ]
+                  )
+                })
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.inputData,
+                    expression: "inputData"
+                  }
+                ],
+                attrs: { id: "chatInput" },
+                domProps: { value: _vm.inputData },
+                on: {
+                  keydown: function($event) {
+                    if (
+                      !("button" in $event) &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    return _vm.enterEvent($event)
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.inputData = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                { attrs: { id: "chatBtn" }, on: { click: _vm.enterEvent } },
+                [_vm._v("전송")]
+              )
+            ])
+          ])
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-b3bc4484", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

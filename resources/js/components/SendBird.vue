@@ -35,12 +35,14 @@
                                 <div v-else class="w-h-100">
                                     <div class="area-4">#{{ $store.getters.getSetOpenChannel.name }}</div>
                                     <div class="area-5">
-                                        <div class="area-7" v-for="(item, index) in totalMsg">
+                                        <div class="area-7" v-for="(item, index) in totalMsg"
+                                             :class="{'my-color': item.user === 'me' }">
                                             {{item.userId}}: {{ item.message }}
                                         </div>
                                     </div>
                                     <input class="area-6" placeholder="입력..." @keydown.enter="enterEvent"
                                            v-model="inputData"></input>
+                                    <div class="area-8" @click="openChannelExit">나가기</div>
                                 </div>
                             </div>
                         </div>
@@ -71,7 +73,8 @@
                 },
                 popupTitle: '',
                 inputData: '',
-                totalMsg: []
+                totalMsg: [],
+                openChannelItem: {}
             }
         },
         methods: {
@@ -98,9 +101,11 @@
             },
             openChannelEnter: function (index) {
                 const thatStore = this.$store
-                const thattTtalMsg =this.totalMsg
+                const thattTtalMsg = this.totalMsg
                 const openListItem = thatStore.getters.getOpenChannelListItem
                 const indexItem = openListItem[index]
+                //open channel item
+                this.openChannelItem = indexItem
                 const indexUrl = indexItem.url
                 const thatViewData = this.viewData
                 const thatHandler = this.createConnectionHandler
@@ -123,19 +128,36 @@
                             console.error(error)
                             return
                         }
-                        messageList.forEach(function(data) {
+                        messageList.forEach(function (data) {
                             thattTtalMsg.unshift({
                                 userId: data._sender.userId,
                                 message: data.message
                             })
-
                         })
                     })
                 });
                 /**
                  * Handler
                  * */
-                 thatHandler('123123qw')
+                thatHandler('123123qw')
+            },
+            openChannelExit: function () {
+                const that = this
+                console.log("exit", this.openChannelItem)
+                const indexUrl = this.openChannelItem.url
+                this.sbUtile.OpenChannel.getChannel(indexUrl, function (channel, error) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    channel.exit(function (response, error) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        that.viewData.chat = false
+                    });
+                })
             },
             openChannelAdd: function () {
                 this.$store.commit('popupTitle', 'open 채널')
@@ -168,15 +190,15 @@
                     console.log(message)
                     thattTtalMsg.push({
                         userId: message._sender.userId,
-                        message: message.message
+                        message: message.message,
+                        user: 'me'
                     })
                 });
             },
-            createConnectionHandler: function(key) {
+            createConnectionHandler: function (key) {
                 const thattTtalMsg = this.totalMsg
-                console.log(thattTtalMsg)
                 const ChannelHandler = new this.sbUtile.ChannelHandler();
-                ChannelHandler.onMessageReceived = function(channel, message){
+                ChannelHandler.onMessageReceived = function (channel, message) {
                     console.log(channel)
                     console.log(message)
                     thattTtalMsg.push({
@@ -276,6 +298,18 @@
         width: 100%;
         height: 30px;
         line-height: 30px;
+        text-align: left;
+    }
+
+    .area-8 {
+        width: 100px;
+        height: 25px;
+        float: right;
+        line-height: 25px;
+        background-color: #1b1e21;
+        margin-top: 10px;
+        border-radius: 10px;
+        color: #ffffff;
     }
 
     .background-761 {
