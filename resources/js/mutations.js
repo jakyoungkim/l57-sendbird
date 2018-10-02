@@ -16,5 +16,8 @@ export default {
     },
     channelMsg(state, data) {
         state.channelMsg = data
+    },
+    spinner(state, data) {
+        state.spinner = data
     }
 }

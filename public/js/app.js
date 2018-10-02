@@ -25316,7 +25316,8 @@ var state = {
     popupTitle: '',
     openChannelListItem: [],
     setOpenChannel: {},
-    channelMsg: []
+    channelMsg: [],
+    spinner: 0
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
@@ -47726,6 +47727,7 @@ var _this = this;
                 });
             },
             openChannelList: function openChannelList(utile) {
+                __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].commit('spinner', __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getSpinner + 1);
                 var openChannelList = utile.OpenChannel.createOpenChannelListQuery();
                 return new Promise(function (resolve, reject) {
                     openChannelList.next(function (channels, error) {
@@ -47735,11 +47737,13 @@ var _this = this;
                             return;
                         }
                         resolve(channels);
+                        __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].commit('spinner', __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getSpinner - 1);
                     });
                 });
             },
             openChannelEnter: function openChannelEnter(utile, channel) {
                 var that = _this;
+                __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].commit('spinner', __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getSpinner + 1);
                 return new Promise(function (resolve, reject) {
                     utile.OpenChannel.getChannel(channel.url, function (channel, error) {
                         if (error) {
@@ -47762,16 +47766,32 @@ var _this = this;
                                 msg: messageList.reverse(),
                                 channel: channel
                             });
+                            __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].commit('spinner', __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getSpinner - 1);
                         });
                     });
                     var ChannelHandler = new utile.ChannelHandler();
                     ChannelHandler.onMessageReceived = function (channel, message) {
                         __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getChannelMsg.push(message);
                     };
+                    ChannelHandler.onUserEntered = function (openChannel, user) {
+                        user['type'] = 'in';
+                        user['_sender'] = {
+                            userId: ''
+                        };
+                        __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getChannelMsg.push(user);
+                    };
+                    ChannelHandler.onUserExited = function (openChannel, user) {
+                        user['type'] = 'out';
+                        user['_sender'] = {
+                            userId: ''
+                        };
+                        user['type'] = 'out';
+                    };
                     utile.addChannelHandler(_this.a.devUser().user, ChannelHandler);
                 });
             },
             openChannelAdd: function openChannelAdd(utile, channel) {
+                __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].commit('spinner', __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getSpinner + 1);
                 return new Promise(function (resolve, reject) {
                     utile.OpenChannel.createChannel(channel, null, null, function (createdChannel, error) {
                         if (error) {
@@ -47779,6 +47799,7 @@ var _this = this;
                             return;
                         }
                         return resolve(createdChannel);
+                        __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].commit('spinner', __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getSpinner - 1);
                     });
                 });
             }
@@ -48804,6 +48825,9 @@ var index_esm = {
     },
     getChannelMsg: function getChannelMsg(state) {
         return state.channelMsg;
+    },
+    getSpinner: function getSpinner(status) {
+        return status.spinner;
     }
 });
 
@@ -48830,6 +48854,9 @@ var index_esm = {
     },
     channelMsg: function channelMsg(state, data) {
         state.channelMsg = data;
+    },
+    spinner: function spinner(state, data) {
+        state.spinner = data;
     }
 });
 
@@ -49959,7 +49986,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n.w-h-100[data-v-b3bc4484] {\n    width: 100%;\n}\n#chatArea[data-v-b3bc4484] {\n    width: 100%;\n}\n#chatContain[data-v-b3bc4484] {\n    width: 300px;\n    height: 600px;\n    background-color: #c1f5da;\n    display: inline-block;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(1) {\n    padding: 5px 0;\n    height: 47px;\n    border-bottom: 1px solid #c8c8c8;\n    line-height: 47px;\n    font-size: 18px;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(2) {\n    height: 520px;\n    padding: 10px;\n    overflow: scroll;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(2)::-webkit-scrollbar {\n\n    display: none;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(3) {\n    width: 100%;\n    height: 47px;\n    border: none;\n    background-color: #e8e7e7;\n    padding: 5px 7px;\n}\n#chatInput[data-v-b3bc4484] {\n    width: 215px;\n    height: 100%;\n    border: none;\n    float: left;\n    text-indent: 10px;\n}\n#chatBtn[data-v-b3bc4484] {\n    width: 65px;\n    height: 100%;\n    float: right;\n}\n.userMsg[data-v-b3bc4484] {\n    background-color: #ffffff;\n    border-radius: 4px;\n    padding: 4px;\n    margin-left: 5px;\n    max-width: 178px;\n    text-align: left;\n    word-wrap: break-word\n}\n.t-10[data-v-b3bc4484] {\n    margin-top: 10px;\n}\n.b-y[data-v-b3bc4484] {\n    background-color: #ffe817;\n}\n.dis-i-b[data-v-b3bc4484] {\n    display: inline-block;\n}\n", ""]);
+exports.push([module.i, "\n.w-h-100[data-v-b3bc4484] {\n    width: 100%;\n}\n#chatArea[data-v-b3bc4484] {\n    width: 100%;\n}\n#chatContain[data-v-b3bc4484] {\n    position: relative;\n    width: 300px;\n    background-color: #c1f5da;\n    display: inline-block;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(1) {\n    height: 47px;\n    border-bottom: 1px solid #c8c8c8;\n    line-height: 47px;\n    font-size: 18px;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(2) {\n    height: 520px;\n    padding: 10px;\n    overflow: scroll;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(2)::-webkit-scrollbar {\n    display: none;\n}\n#chatContain > div[data-v-b3bc4484]:nth-child(3) {\n    width: 100%;\n    height: 47px;\n    border: none;\n    background-color: #e8e7e7;\n    padding: 5px 7px;\n}\n#chatInput[data-v-b3bc4484] {\n    width: 215px;\n    height: 100%;\n    border: none;\n    float: left;\n    text-indent: 10px;\n}\n#chatBtn[data-v-b3bc4484] {\n    width: 65px;\n    height: 100%;\n    float: right;\n}\n.userMsg[data-v-b3bc4484] {\n    background-color: #ffffff;\n    border-radius: 4px;\n    padding: 4px;\n    margin-left: 5px;\n    max-width: 178px;\n    text-align: left;\n    word-wrap: break-word\n}\n.t-10[data-v-b3bc4484] {\n    margin-top: 10px;\n}\n.b-y[data-v-b3bc4484] {\n    background-color: #ffe817;\n}\n.dis-i-b[data-v-b3bc4484] {\n    display: inline-block;\n}\n#headerArea > div[data-v-b3bc4484]:nth-child(1) {\n    position: absolute;\n    width: 47px;\n    height: 47px;\n    background-color: #9cb7a9;\n}\n#headerArea > div[data-v-b3bc4484]:nth-child(2) {\n    width: 100%;\n    height: 47px;\n    line-height: 47px;\n}\n#menuArea[data-v-b3bc4484] {\n    position: absolute;\n    top: 0;\n    width: 255px;\n    height: 567px;\n    background-color: #9cb7a9;\n}\n#menuArea > div[data-v-b3bc4484]:nth-child(1) {\n    width: 100%;\n    height: 47px;\n    line-height: 47px;\n    font-size: 17px;\n    background-color: #6c8e7c;\n}\n#menuArea > div[data-v-b3bc4484]:nth-child(2) {\n    width: 100%;\n    padding: 10px;\n    height: 500px;\n    overflow: scroll;\n}\n#menuArea > div:nth-child(2) > div[data-v-b3bc4484]:nth-child(n) {\n    width: 100%;\n    text-align: left;\n}\n#menuArea > div:nth-child(2) > div:nth-child(n) > div[data-v-b3bc4484]:nth-child(n) {\n    display: inline-block;\n}\n#menuArea > div:nth-child(2) > div:nth-child(n) > div[data-v-b3bc4484]:nth-child(2n) {\n    display: inline-block;\n    background-color: #c8c8c8;\n    color: #ffffff;\n    border-radius: 10px;\n    padding: 5px;\n}\n#menuArea > div[data-v-b3bc4484]:nth-child(2)::-webkit-scrollbar {\n    display: none;\n}\n.fade-enter-active[data-v-b3bc4484], .fade-leave-active[data-v-b3bc4484] {\n    -webkit-transition: opacity .5s;\n    transition: opacity .5s;\n}\n.fade-enter[data-v-b3bc4484], .fade-leave-to[data-v-b3bc4484] {\n    opacity: 0;\n}\n#spinnerArea[data-v-b3bc4484] {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n}\n#spinnerArea > div[data-v-b3bc4484]:nth-child(1) {\n    width: 100%;\n    height: 100%;\n    opacity: 0.5;\n    background-color: #000000;\n}\n#spinnerArea > table[data-v-b3bc4484]:nth-child(2) {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    top: 0;\n}\n.lds-ring[data-v-b3bc4484] {\n    display: inline-block;\n    position: relative;\n    width: 64px;\n    height: 64px;\n}\n.lds-ring div[data-v-b3bc4484] {\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n    display: block;\n    position: absolute;\n    width: 51px;\n    height: 51px;\n    margin: 6px;\n    border: 6px solid #fff;\n    border-radius: 50%;\n    -webkit-animation: lds-ring-data-v-b3bc4484 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;\n            animation: lds-ring-data-v-b3bc4484 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;\n    border-color: #fff transparent transparent transparent;\n}\n.lds-ring div[data-v-b3bc4484]:nth-child(1) {\n    -webkit-animation-delay: -0.45s;\n            animation-delay: -0.45s;\n}\n.lds-ring div[data-v-b3bc4484]:nth-child(2) {\n    -webkit-animation-delay: -0.3s;\n            animation-delay: -0.3s;\n}\n.lds-ring div[data-v-b3bc4484]:nth-child(3) {\n    -webkit-animation-delay: -0.15s;\n            animation-delay: -0.15s;\n}\n@-webkit-keyframes lds-ring-data-v-b3bc4484 {\n0% {\n        -webkit-transform: rotate(0deg);\n                transform: rotate(0deg);\n}\n100% {\n        -webkit-transform: rotate(360deg);\n                transform: rotate(360deg);\n}\n}\n@keyframes lds-ring-data-v-b3bc4484 {\n0% {\n        -webkit-transform: rotate(0deg);\n                transform: rotate(0deg);\n}\n100% {\n        -webkit-transform: rotate(360deg);\n                transform: rotate(360deg);\n}\n}\n", ""]);
 
 // exports
 
@@ -49970,6 +49997,44 @@ exports.push([module.i, "\n.w-h-100[data-v-b3bc4484] {\n    width: 100%;\n}\n#ch
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -50015,8 +50080,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             sb: {},
             channel: {},
             title: '',
-            msgList: [],
-            inputData: ''
+            inputData: '',
+            menu: false,
+            channelUserList: []
         };
     },
 
@@ -50032,6 +50098,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 that.$store.getters.getChannelMsg.push(message);
                 that.inputData = "";
             });
+        },
+        menuOpen: function menuOpen() {
+            var that = this;
+            this.menu = !this.menu;
+            if (this.menu) {
+                var participantListQuery = that.channel.createParticipantListQuery();
+                participantListQuery.next(function (participantList, error) {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    that.channelUserList = participantList;
+                });
+            }
         }
     },
     created: function created() {
@@ -50060,7 +50140,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 key: 'name',
                 value: channelName
             });
-            console.log(result.result);
             if (result.result) {
                 //접속
                 sb.openChannelEnter(_this.sb, result.searchItem).then(function (value) {
@@ -50095,93 +50174,205 @@ var render = function() {
     _c("table", { attrs: { id: "chatArea" } }, [
       _c("tr", [
         _c("td", { staticClass: "w-h-100 text-center" }, [
-          _c("div", { attrs: { id: "chatContain" } }, [
-            _c("div", { staticClass: "font-weight-bold" }, [
-              _vm._v(_vm._s(_vm.title))
-            ]),
-            _vm._v(" "),
-            _c("div", { attrs: { id: "msgArea" } }, [
+          _c(
+            "div",
+            { attrs: { id: "chatContain" } },
+            [
               _c(
                 "div",
-                _vm._l(_vm.$store.getters.getChannelMsg, function(item, index) {
-                  return _c(
+                {
+                  staticClass: "font-weight-bold",
+                  attrs: { id: "headerArea" }
+                },
+                [
+                  _c(
                     "div",
                     {
-                      staticClass: "w-100",
-                      class: {
-                        "t-10": index !== 0,
-                        "text-right": _vm.my === item._sender.userId,
-                        "text-left": _vm.my !== item._sender.userId
-                      }
+                      staticClass: "font-weight-bold",
+                      on: { click: _vm.menuOpen }
                     },
-                    [
-                      _c("div", { staticClass: "dis-i-b" }, [
-                        _vm._v(_vm._s(item._sender.userId) + " :")
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "userMsg font-weight-bold dis-i-b",
-                          class: { "b-y": _vm.my === item._sender.userId }
-                        },
-                        [
-                          _vm._v(
-                            _vm._s(item.message) +
-                              "\n                                "
-                          )
-                        ]
-                      )
-                    ]
-                  )
-                })
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.inputData,
-                    expression: "inputData"
-                  }
-                ],
-                attrs: { id: "chatInput" },
-                domProps: { value: _vm.inputData },
-                on: {
-                  keydown: function($event) {
-                    if (
-                      !("button" in $event) &&
-                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                    ) {
-                      return null
-                    }
-                    return _vm.enterEvent($event)
-                  },
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.inputData = $event.target.value
-                  }
-                }
-              }),
+                    [_vm._v("M")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", [_vm._v(_vm._s(_vm.title))])
+                ]
+              ),
               _vm._v(" "),
-              _c(
-                "button",
-                { attrs: { id: "chatBtn" }, on: { click: _vm.enterEvent } },
-                [_vm._v("전송")]
-              )
-            ])
-          ])
+              _c("div", { attrs: { id: "msgArea" } }, [
+                _c(
+                  "div",
+                  _vm._l(_vm.$store.getters.getChannelMsg, function(
+                    item,
+                    index
+                  ) {
+                    return _c(
+                      "div",
+                      {
+                        staticClass: "w-100",
+                        class: {
+                          "t-10": index !== 0,
+                          "text-right": _vm.my === item._sender.userId,
+                          "text-left": _vm.my !== item._sender.userId
+                        }
+                      },
+                      [
+                        item.type !== "in" && "out"
+                          ? _c("div", [
+                              _c("div", { staticClass: "dis-i-b" }, [
+                                _vm._v(_vm._s(item._sender.userId) + " :")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "userMsg font-weight-bold dis-i-b",
+                                  class: {
+                                    "b-y": _vm.my === item._sender.userId
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    _vm._s(item.message) +
+                                      "\n                                    "
+                                  )
+                                ]
+                              )
+                            ])
+                          : _c("div", [
+                              _c(
+                                "div",
+                                { staticClass: "font-weight-bold text-center" },
+                                [
+                                  _vm._v(
+                                    "------" +
+                                      _vm._s(item.userId) +
+                                      "\n                                        "
+                                  ),
+                                  item.type === "in"
+                                    ? _c("span", [_vm._v("입장하셨습니다.")])
+                                    : _c("span", [_vm._v("퇴장하셨습니다.")]),
+                                  _vm._v(
+                                    "------\n                                    "
+                                  )
+                                ]
+                              )
+                            ])
+                      ]
+                    )
+                  })
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.inputData,
+                      expression: "inputData"
+                    }
+                  ],
+                  attrs: { id: "chatInput" },
+                  domProps: { value: _vm.inputData },
+                  on: {
+                    keydown: function($event) {
+                      if (
+                        !("button" in $event) &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      return _vm.enterEvent($event)
+                    },
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.inputData = $event.target.value
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  { attrs: { id: "chatBtn" }, on: { click: _vm.enterEvent } },
+                  [_vm._v("전송")]
+                )
+              ]),
+              _vm._v(" "),
+              _c("transition", { attrs: { name: "fade", mode: "out-in" } }, [
+                _vm.menu
+                  ? _c(
+                      "div",
+                      {
+                        attrs: { id: "menuArea" },
+                        on: { click: _vm.menuOpen }
+                      },
+                      [
+                        _c("div", { staticClass: "font-weight-bold" }, [
+                          _vm._v("접속자")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          _vm._l(_vm.channelUserList, function(item, index) {
+                            return _c(
+                              "div",
+                              { class: { "t-10": index !== 0 } },
+                              [
+                                _c("div", { staticClass: "font-weight-bold" }, [
+                                  _vm._v(_vm._s(index + 1) + ".")
+                                ]),
+                                _vm._v(" "),
+                                _c("div", [_vm._v(_vm._s(item.userId))])
+                              ]
+                            )
+                          })
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _vm.$store.getters.getSpinner !== 0
+                ? _c("div", { attrs: { id: "spinnerArea" } }, [
+                    _c("div"),
+                    _vm._v(" "),
+                    _vm._m(0)
+                  ])
+                : _vm._e()
+            ],
+            1
+          )
         ])
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("table", [
+      _c("tr", [
+        _c("td", [
+          _c("div", { staticClass: "lds-ring" }, [
+            _c("div"),
+            _vm._v(" "),
+            _c("div"),
+            _vm._v(" "),
+            _c("div"),
+            _vm._v(" "),
+            _c("div")
+          ])
+        ])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

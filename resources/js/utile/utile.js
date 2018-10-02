@@ -19,6 +19,7 @@ export default {
                 })
             },
             openChannelList: (utile) => {
+                store.commit('spinner', store.getters.getSpinner + 1)
                 let openChannelList = utile.OpenChannel.createOpenChannelListQuery()
                 return new Promise((resolve, reject) => {
                     openChannelList.next((channels, error) => {
@@ -28,11 +29,13 @@ export default {
                             return
                         }
                         resolve(channels)
+                        store.commit('spinner', store.getters.getSpinner - 1)
                     })
                 })
             },
             openChannelEnter: (utile, channel) => {
                 let that = this
+                store.commit('spinner', store.getters.getSpinner + 1)
                 return new Promise((resolve, reject) => {
                     utile.OpenChannel.getChannel(channel.url, (channel, error) => {
                         if (error) {
@@ -55,16 +58,32 @@ export default {
                                 msg: messageList.reverse(),
                                 channel: channel
                             })
+                            store.commit('spinner', store.getters.getSpinner - 1)
                         })
                     })
                     const ChannelHandler = new utile.ChannelHandler()
                     ChannelHandler.onMessageReceived = function (channel, message) {
                         store.getters.getChannelMsg.push(message)
                     }
+                    ChannelHandler.onUserEntered = function (openChannel, user) {
+                        user['type'] = 'in'
+                        user['_sender'] = {
+                            userId: ''
+                        }
+                        store.getters.getChannelMsg.push(user)
+                    }
+                    ChannelHandler.onUserExited = function (openChannel, user) {
+                        user['type'] = 'out'
+                        user['_sender'] = {
+                            userId: ''
+                        }
+                        user['type'] = 'out'
+                    }
                     utile.addChannelHandler(this.a.devUser().user, ChannelHandler)
                 })
             },
             openChannelAdd: (utile, channel) => {
+                store.commit('spinner', store.getters.getSpinner + 1)
                 return new Promise((resolve, reject) => {
                     utile.OpenChannel.createChannel(channel, null, null, function (createdChannel, error) {
                         if (error) {
@@ -72,6 +91,7 @@ export default {
                             return
                         }
                         return resolve(createdChannel)
+                        store.commit('spinner', store.getters.getSpinner - 1)
                     })
                 })
             },

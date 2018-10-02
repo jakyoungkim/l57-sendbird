@@ -11,7 +11,8 @@ const state = {
     popupTitle: '',
     openChannelListItem: [],
     setOpenChannel: {},
-    channelMsg: []
+    channelMsg: [],
+    spinner: 0
 };
 
 export default new Vuex.Store({
