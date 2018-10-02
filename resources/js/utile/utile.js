@@ -63,7 +63,18 @@ export default {
                     }
                     utile.addChannelHandler(this.a.devUser().user, ChannelHandler)
                 })
-            }
+            },
+            openChannelAdd: (utile, channel) => {
+                return new Promise((resolve, reject) => {
+                    utile.OpenChannel.createChannel(channel, null, null, function (createdChannel, error) {
+                        if (error) {
+                            console.error(error);
+                            return
+                        }
+                        return resolve(createdChannel)
+                    })
+                })
+            },
         }
     },
     devUser: () => {

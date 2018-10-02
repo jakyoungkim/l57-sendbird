@@ -8,11 +8,12 @@
                         <div id="msgArea">
                             <div>
                                 <div class="w-100" v-for="(item, index) in $store.getters.getChannelMsg"
-                                :class="{'t-10':index !== 0, 'text-right':my === item._sender.userId,
+                                     :class="{'t-10':index !== 0, 'text-right':my === item._sender.userId,
                                 'text-left':my !== item._sender.userId}">
                                     <div class="dis-i-b">{{ item._sender.userId }} :</div>
                                     <div class="userMsg font-weight-bold dis-i-b"
-                                    :class="{'b-y':my === item._sender.userId}">{{item.message}}</div>
+                                         :class="{'b-y':my === item._sender.userId}">{{item.message}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -49,7 +50,7 @@
         methods: {
             enterEvent: function () {
                 let that = this
-                if(this.inputData.length <= 0) return
+                if (this.inputData.length <= 0) return
                 this.channel.sendUserMessage(this.inputData, null, null, function (message, error) {
                     if (error) {
                         console.error(error)
@@ -78,12 +79,13 @@
              * Channel add or Enter
              * */
             sb.openChannelList(this.sb).then((value) => {
-                const channelName = '채널1'
+                const channelName = '채널10'
                 this.title = channelName
                 const result = utiles.objectListSearch(value, {
                     key: 'name',
                     value: channelName
                 })
+                console.log(result.result)
                 if (result.result) {
                     //접속
                     sb.openChannelEnter(this.sb, result.searchItem).then((value) => {
@@ -92,10 +94,16 @@
                     })
                 } else {
                     //채널 생성 및 접속
+                    sb.openChannelAdd(this.sb, channelName).then((result) => {
+                        sb.openChannelEnter(this.sb, result).then((value) => {
+                            this.$store.commit("channelMsg", value.msg)
+                            this.channel = value.channel
+                        })
+                    })
                 }
             })
         },
-        updated () {
+        updated() {
             this.$utile.gotoBottom("msgArea")
         }
 
@@ -159,6 +167,7 @@
         height: 100%;
         float: right;
     }
+
     .userMsg {
         background-color: #ffffff;
         border-radius: 4px;
@@ -168,12 +177,15 @@
         text-align: left;
         word-wrap: break-word
     }
+
     .t-10 {
         margin-top: 10px;
     }
+
     .b-y {
         background-color: #ffe817;
     }
+
     .dis-i-b {
         display: inline-block;
     }
