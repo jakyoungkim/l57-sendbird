@@ -5,6 +5,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 require('./bootstrap');
+require('es6-promise/auto');
 import Vue from 'vue';
 import utile from './utile/utile.js'
 import SendBird from 'sendbird'
@@ -13,7 +14,6 @@ import store from './store';
  * Component
  * */
 import sbcomponent from './components/SendBird'
-import Spinner from 'vue-spinner/src/PacmanLoader'
 import creatpopup from './components/CreatPopup'
 import SimpleSendbird from './components/SimpleSendbird'
 /**
@@ -29,7 +29,6 @@ Vue.prototype.$store = store;
  */
 //Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('send-bird', sbcomponent);
-Vue.component('spinner', Spinner);
 Vue.component('creat-popup', creatpopup);
 Vue.component('simple-sendbird', SimpleSendbird)
 const app =new Vue({

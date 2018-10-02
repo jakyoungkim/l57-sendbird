@@ -34,13 +34,16 @@
                             <button id="chatBtn" @click="enterEvent">전송</button>
                         </div>
                         <transition name="fade" mode="out-in">
-                            <div id="menuArea" v-if="menu" @click="menuOpen">
-                                <div class="font-weight-bold">접속자</div>
-                                <div>
-                                    <div v-for="(item, index) in channelUserList"
-                                         :class="{'t-10':index !== 0}">
-                                        <div class="font-weight-bold">{{ index+1 }}.</div>
-                                        <div>{{ item.userId }}</div>
+                            <div id="menuContain" v-if="menu">
+                                <div id="backArea"></div>
+                                <div id="menuArea" @click="menuOpen">
+                                    <div class="font-weight-bold">접속자</div>
+                                    <div>
+                                        <div v-for="(item, index) in channelUserList"
+                                             :class="{'t-10':index !== 0}">
+                                            <div class="font-weight-bold">{{ index+1 }}.</div>
+                                            <div>{{ item.userId }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -128,6 +131,8 @@
             const devUser = this.$utile.devUser()
             this.my = devUser.user
             sb.connetion(this.sb, devUser.user)
+            // this.my = '123123qw'
+            // sb.connetion(this.sb, '123123qw')
             /**
              * Channel add or Enter
              * */
@@ -215,6 +220,9 @@
         width: 65px;
         height: 100%;
         float: right;
+        border: none;
+        background-color: #1b4b72;
+        color: #ffffff;
     }
 
     .userMsg {
@@ -252,12 +260,27 @@
         line-height: 47px;
     }
 
-    #menuArea {
+    #menuContain {
         position: absolute;
         top: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #menuArea {
         width: 255px;
-        height: 567px;
+        height: 614px;
         background-color: #9cb7a9;
+        position: fixed;
+        z-index: 100;
+    }
+
+    #backArea {
+        width: 300px;
+        height: 614px;
+        position: fixed;
+        z-index: 10;
+        background-color: #ffffff;
+        opacity: 0.5;
     }
 
     #menuArea > div:nth-child(1) {
