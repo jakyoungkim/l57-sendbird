@@ -34,7 +34,6 @@ export default {
                 })
             },
             openChannelEnter: (utile, channel) => {
-                let that = this
                 store.commit('spinner', store.getters.getSpinner + 1)
                 return new Promise((resolve, reject) => {
                     utile.OpenChannel.getChannel(channel.url, (channel, error) => {

@@ -1,20 +1,28 @@
-
+/**
+ * video.js 설정
+ */
+window.HELP_IMPROVE_VIDEOJS = false;
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+
 require('./bootstrap');
+import 'video.js/dist/video-js.css';
+import 'video.js';
 import Vue from 'vue';
-import utile from './utile/utile.js'
-import SendBird from 'sendbird'
+import utile from './utile/utile.js';
+import SendBird from 'sendbird';
 import store from './store';
 /**
  * Component
  * */
-import sbcomponent from './components/SendBird'
-import creatpopup from './components/CreatPopup'
-import SimpleSendbird from './components/SimpleSendbird'
+import sbcomponent from './components/SendBird';
+import creatpopup from './components/CreatPopup';
+import SimpleSendbird from './components/SimpleSendbird';
+import TestVideo from  './components/TestVideo';
+import spinner from './components/spinner';
 /**
  * custom utile
  * */
@@ -30,6 +38,8 @@ Vue.prototype.$store = store;
 Vue.component('send-bird', sbcomponent);
 Vue.component('creat-popup', creatpopup);
 Vue.component('simple-sendbird', SimpleSendbird)
+Vue.component('test-video', TestVideo);
+Vue.component('spinner', spinner)
 const app =new Vue({
     el: '#app',
 });

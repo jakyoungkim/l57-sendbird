@@ -2,7 +2,10 @@
     <div>
         <table id="chatArea">
             <tr>
-                <td class="w-h-100 text-center">
+                <td class="padding-20">
+                    <test-video></test-video>
+                </td>
+                <td class="text-center">
                     <div id="chatContain">
                         <div id="headerArea" class="font-weight-bold">
                             <div @click="menuOpen" class="font-weight-bold">M</div>
@@ -48,21 +51,7 @@
                                 </div>
                             </div>
                         </transition>
-                        <div id="spinnerArea" v-if="$store.getters.getSpinner !== 0">
-                            <div></div>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <div class="lds-ring">
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                        <spinner></spinner>
                     </div>
                 </td>
             </tr>
@@ -72,7 +61,7 @@
 
 <script>
 export default {
-    name: "SimpleSendbird",
+    name: 'SimpleSendbird',
     props: {
         appKey: {
             type: String,
@@ -131,7 +120,6 @@ export default {
         let utiles = this.$utile
         let sb = utiles.sb()
         this.sb = sb.reset(sb.utile, this.appKey)
-        console.log(this.user, this.channelName)
         /**
          * connetion
          **/
@@ -152,17 +140,17 @@ export default {
                 value: channelName,
             });
             if (result.result) {
-                //접속
+                // 접속
                 sb.openChannelEnter(this.sb, result.searchItem).then((value) => {
-                    this.$store.commit("channelMsg", value.msg)
+                    this.$store.commit('channelMsg', value.msg)
                     this.channel = value.channel
                 });
             } else {
-                //채널 생성 및 접속
+                // 채널 생성 및 접속
                 sb.openChannelAdd(this.sb, channelName).then((result) => {
                     sb.openChannelEnter(this.sb, result).then((value) => {
-                        this.$store.commit("channelMsg", value.msg)
-                        this.channel = value.channel
+                        this.$store.commit('channelMsg', value.msg)
+                        this.channel = value.channel;
                     });
                 });
             }
@@ -332,66 +320,9 @@ export default {
     .fade-enter, .fade-leave-to {
         opacity: 0;
     }
-
-    #spinnerArea {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-    }
-
-    #spinnerArea > div:nth-child(1) {
-        width: 100%;
-        height: 100%;
-        opacity: 0.5;
-        background-color: #000000;
-    }
-
-    #spinnerArea > table:nth-child(2) {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-    }
-
-    .lds-ring {
-        display: inline-block;
-        position: relative;
-        width: 64px;
-        height: 64px;
-    }
-
-    .lds-ring div {
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        width: 51px;
-        height: 51px;
-        margin: 6px;
-        border: 6px solid #fff;
-        border-radius: 50%;
-        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #fff transparent transparent transparent;
-    }
-
-    .lds-ring div:nth-child(1) {
-        animation-delay: -0.45s;
-    }
-
-    .lds-ring div:nth-child(2) {
-        animation-delay: -0.3s;
-    }
-
-    .lds-ring div:nth-child(3) {
-        animation-delay: -0.15s;
-    }
-
-    @keyframes lds-ring {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
+    .padding-20 {
+        width: 700px;
+        padding: 20px;
+        background-color: #c1f5da;
     }
 </style>

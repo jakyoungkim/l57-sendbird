@@ -79,6 +79,8 @@
             @show
             @section('sendbird')
             @show
+            @section('testvideo')
+            @show
         </main>
     </div>
 </body>
