@@ -71,108 +71,107 @@
 </template>
 
 <script>
-    export default {
-        name: "SimpleSendbird",
-        props: {
-            appKey: {
-                type: String
-            },
-            user: {
-                type: String
-            },
-            channelName: {
-                type: String
-            }
+export default {
+    name: "SimpleSendbird",
+    props: {
+        appKey: {
+            type: String,
         },
-        data() {
-            return {
-                my: '',
-                sb: {},
-                channel: {},
-                title: '',
-                inputData: '',
-                menu: false,
-                channelUserList: []
-            }
+        user: {
+            type: String,
         },
-        methods: {
-            enterEvent: function () {
-                let that = this
-                if (this.inputData.length <= 0) return
-                this.channel.sendUserMessage(this.inputData, null, null, function (message, error) {
+        channelName: {
+            type: String,
+        },
+    },
+    methods: {
+        enterEvent: function () {
+            let that = this
+            if (this.inputData.length <= 0) return
+            this.channel.sendUserMessage(this.inputData, null, null, function (message, error) {
+                if (error) {
+                    console.error(error)
+                    return;
+                }
+                that.$store.getters.getChannelMsg.push(message)
+                that.inputData = '';
+            });
+        },
+        menuOpen: function () {
+            let that = this
+            this.menu = !this.menu
+            if (this.menu) {
+                let participantListQuery = that.channel.createParticipantListQuery();
+                participantListQuery.next(function (participantList, error) {
                     if (error) {
                         console.error(error)
                         return;
                     }
-                    that.$store.getters.getChannelMsg.push(message)
-                    that.inputData = ""
-                })
-            },
-            menuOpen: function () {
-                let that = this
-                this.menu = !this.menu
-                if (this.menu) {
-                    let participantListQuery = that.channel.createParticipantListQuery();
-                    participantListQuery.next(function (participantList, error) {
-                        if (error) {
-                            console.error(error)
-                            return
-                        }
-                        that.channelUserList = participantList
-                    })
-                }
+                    that.channelUserList = participantList
+                });
             }
         },
-        created() {
-            const that = this
-            /**
-             * reset
-             * */
-            let utiles = this.$utile
-            let sb = utiles.sb()
-            this.sb = sb.reset(sb.utile, this.appKey)
-            console.log(this.user, this.channelName)
-            /**
-             * connetion
-             **/
-                //임시 User 생성
-            // const devUser = this.$utile.devUser()
-             this.my = this.user
-            sb.connetion(this.sb, this.user)
-            // this.my = '123123qw'
-            // sb.connetion(this.sb, '123123qw')
-            /**
-             * Channel add or Enter
-             * */
-            sb.openChannelList(this.sb).then((value) => {
-                const channelName = that.channelName
-                this.title = channelName
-                const result = utiles.objectListSearch(value, {
-                    key: 'name',
-                    value: channelName
-                })
-                if (result.result) {
-                    //접속
-                    sb.openChannelEnter(this.sb, result.searchItem).then((value) => {
+    },
+    data() {
+        return {
+            my: '',
+            sb: {},
+            channel: {},
+            title: '',
+            inputData: '',
+            menu: false,
+            channelUserList: [],
+        };
+    },
+    created() {
+        const that = this
+        /**
+         * reset
+         * */
+        let utiles = this.$utile
+        let sb = utiles.sb()
+        this.sb = sb.reset(sb.utile, this.appKey)
+        console.log(this.user, this.channelName)
+        /**
+         * connetion
+         **/
+        //임시 User 생성
+        // const devUser = this.$utile.devUser()
+        this.my = this.user
+        sb.connetion(this.sb, this.user)
+        // this.my = '123123qw'
+        // sb.connetion(this.sb, '123123qw')
+        /**
+         * Channel add or Enter
+         * */
+        sb.openChannelList(this.sb).then((value) => {
+            const channelName = that.channelName
+            this.title = channelName
+            const result = utiles.objectListSearch(value, {
+                key: 'name',
+                value: channelName,
+            });
+            if (result.result) {
+                //접속
+                sb.openChannelEnter(this.sb, result.searchItem).then((value) => {
+                    this.$store.commit("channelMsg", value.msg)
+                    this.channel = value.channel
+                });
+            } else {
+                //채널 생성 및 접속
+                sb.openChannelAdd(this.sb, channelName).then((result) => {
+                    sb.openChannelEnter(this.sb, result).then((value) => {
                         this.$store.commit("channelMsg", value.msg)
                         this.channel = value.channel
-                    })
-                } else {
-                    //채널 생성 및 접속
-                    sb.openChannelAdd(this.sb, channelName).then((result) => {
-                        sb.openChannelEnter(this.sb, result).then((value) => {
-                            this.$store.commit("channelMsg", value.msg)
-                            this.channel = value.channel
-                        })
-                    })
-                }
-            })
-        },
-        updated() {
-            this.$utile.gotoBottom("msgArea")
-        }
-
-    }
+                    });
+                });
+            }
+        });
+    },
+    updated() {
+        this.$utile.gotoBottom("msgArea");
+    },
+};
 </script>
 
 <style scoped>
@@ -274,6 +273,7 @@
         width: 100%;
         height: 100%;
     }
+
     #menuArea {
         width: 255px;
         height: 614px;

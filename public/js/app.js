@@ -47794,7 +47794,7 @@ var _this = this;
                             console.error(error);
                             return;
                         }
-                        return resolve(createdChannel);
+                        resolve(createdChannel);
                         __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].commit('spinner', __WEBPACK_IMPORTED_MODULE_1__store__["a" /* default */].getters.getSpinner - 1);
                     });
                 });
@@ -47821,7 +47821,6 @@ var _this = this;
         return {
             result: result,
             searchItem: searchItem
-
         };
     },
     gotoBottom: function gotoBottom(id) {
@@ -49825,18 +49824,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             type: String
         }
     },
-    data: function data() {
-        return {
-            my: '',
-            sb: {},
-            channel: {},
-            title: '',
-            inputData: '',
-            menu: false,
-            channelUserList: []
-        };
-    },
-
     methods: {
         enterEvent: function enterEvent() {
             var that = this;
@@ -49847,7 +49834,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     return;
                 }
                 that.$store.getters.getChannelMsg.push(message);
-                that.inputData = "";
+                that.inputData = '';
             });
         },
         menuOpen: function menuOpen() {
@@ -49864,6 +49851,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             }
         }
+    },
+    data: function data() {
+        return {
+            my: '',
+            sb: {},
+            channel: {},
+            title: '',
+            inputData: '',
+            menu: false,
+            channelUserList: []
+        };
     },
     created: function created() {
         var _this = this;

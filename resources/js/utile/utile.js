@@ -1,5 +1,5 @@
-import SendBird from 'sendbird'
-import store from '../store'
+import SendBird from 'sendbird';
+import store from '../store';
 
 export default {
     sb: () => {
@@ -7,13 +7,13 @@ export default {
             utile: SendBird,
             reset: (utile, key) => {
                 return new utile({
-                    appId: key
-                })
+                    appId: key,
+                });
             },
             connetion: (utile, user) => {
                 utile.connect(user, (user, error) => {
                     if (error) {
-                        console.log(error)
+                        console.log(error);
                     } else {
                     }
                 })
@@ -26,10 +26,10 @@ export default {
                         if (error) {
                             console.log(error)
                             reject(error)
-                            return
+                            return;
                         }
                         resolve(channels)
-                        store.commit('spinner', store.getters.getSpinner - 1)
+                        store.commit('spinner', store.getters.getSpinner - 1);
                     })
                 })
             },
@@ -52,32 +52,32 @@ export default {
                         messageListQuery.load(30, true, (messageList, error) => {
                             if (error) {
                                 console.error(error)
-                                return
+                                return;
                             }
                             resolve({
                                 msg: messageList.reverse(),
-                                channel: channel
+                                channel: channel,
                             })
                             store.commit('spinner', store.getters.getSpinner - 1)
                         })
                     })
                     const ChannelHandler = new utile.ChannelHandler()
                     ChannelHandler.onMessageReceived = function (channel, message) {
-                        store.getters.getChannelMsg.push(message)
+                        store.getters.getChannelMsg.push(message);
                     }
                     ChannelHandler.onUserEntered = function (openChannel, user) {
                         user['type'] = 'in'
                         user['_sender'] = {
                             userId: ''
                         }
-                        store.getters.getChannelMsg.push(user)
+                        store.getters.getChannelMsg.push(user);
                     }
                     ChannelHandler.onUserExited = function (openChannel, user) {
                         user['type'] = 'out'
                         user['_sender'] = {
-                            userId: ''
+                            userId: '',
                         }
-                        user['type'] = 'out'
+                        user['type'] = 'out';
                     }
                     utile.addChannelHandler(this.a.devUser().user, ChannelHandler)
                 })
@@ -87,22 +87,22 @@ export default {
                 return new Promise((resolve, reject) => {
                     utile.OpenChannel.createChannel(channel, null, null, function (createdChannel, error) {
                         if (error) {
-                            console.error(error);
-                            return
+                            console.error(error)
+                            return;
                         }
-                        return resolve(createdChannel)
+                        resolve(createdChannel)
                         store.commit('spinner', store.getters.getSpinner - 1)
-                    })
-                })
+                    });
+                });
             },
-        }
+        };
     },
     devUser: () => {
         const date = new Date()
         const devUser = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
         return {
             user: "dev:" + devUser,
-            index: devUser
+            index: devUser,
         }
     },
     objectListSearch: (list, object) => {
@@ -111,17 +111,16 @@ export default {
         list.forEach((item, index, arr) => {
             if (item[object.key] === object.value) {
                 result = true
-                searchItem = arr[index]
+                searchItem = arr[index];
             }
         })
         return {
             result: result,
-            searchItem: searchItem
-
-        }
+            searchItem: searchItem,
+        };
     },
     gotoBottom: (id) => {
         let element = document.getElementById(id);
-        element.scrollTop = element.scrollHeight
-    }
-}
+        element.scrollTop = element.scrollHeight;
+    },
+};
