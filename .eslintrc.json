@@ -1,0 +1,32 @@
+{
+    "extends": [
+        "airbnb-base",
+        "plugin:vue/essential"
+    ],
+    "env": {
+        "es6": true,
+        "browser": true
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "max-len": "off",
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+        "no-unused-vars": "off",
+        "no-multi-assign": "off",
+        "import/no-unresolved": "off",
+        "global-require": "off",
+        "no-empty": "off",
+        "no-console": "off",
+        "import/extensions": "off",
+        "import/first": "off"
+    },
+    "globals": {
+        "window": false,
+        "_": false,
+        "$": false,
+        "jQuery": false,
+        "Vue": false,
+        "axios": false,
+        "Popper": false
+    }
+}

@@ -30,6 +30,8 @@ class HomeController extends Controller
     public function sendbird()
     {
         $data['key'] = '076F2CD7-A154-4522-8415-112D6CDB2248';
+        $data['user'] = $_GET['user'];
+        $data['channel'] = $_GET['channel'];
         return view( 'sendbird', $data);
     }
 }

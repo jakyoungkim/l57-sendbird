@@ -2,5 +2,5 @@
 
 @section('sendbird')
     @parent
-    <simple-sendbird :app-key="'{{ $key }}'"></simple-sendbird>
+    <simple-sendbird :app-key="'{{ $key }}'" :user="'{{ $user }}'" :channel-name="'{{ $channel }}'" ></simple-sendbird>
 @endsection

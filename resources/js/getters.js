@@ -16,5 +16,8 @@ export default {
     },
     getChannelMsg: (state) => {
         return state.channelMsg
+    },
+    getSpinner: (status) => {
+        return status.spinner
     }
 };
