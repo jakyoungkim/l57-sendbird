@@ -76,6 +76,12 @@
         props: {
             appKey: {
                 type: String
+            },
+            user: {
+                type: String
+            },
+            channelName: {
+                type: String
             }
         },
         data() {
@@ -118,26 +124,28 @@
             }
         },
         created() {
+            const that = this
             /**
              * reset
              * */
             let utiles = this.$utile
             let sb = utiles.sb()
             this.sb = sb.reset(sb.utile, this.appKey)
+            console.log(this.user, this.channelName)
             /**
              * connetion
              **/
                 //임시 User 생성
-            const devUser = this.$utile.devUser()
-            this.my = devUser.user
-            sb.connetion(this.sb, devUser.user)
+            // const devUser = this.$utile.devUser()
+             this.my = this.user
+            sb.connetion(this.sb, this.user)
             // this.my = '123123qw'
             // sb.connetion(this.sb, '123123qw')
             /**
              * Channel add or Enter
              * */
             sb.openChannelList(this.sb).then((value) => {
-                const channelName = '채널10'
+                const channelName = that.channelName
                 this.title = channelName
                 const result = utiles.objectListSearch(value, {
                     key: 'name',
@@ -270,15 +278,13 @@
         width: 255px;
         height: 614px;
         background-color: #9cb7a9;
-        position: fixed;
-        z-index: 100;
+        position: absolute;
     }
 
     #backArea {
         width: 300px;
         height: 614px;
-        position: fixed;
-        z-index: 10;
+        position: absolute;
         background-color: #ffffff;
         opacity: 0.5;
     }

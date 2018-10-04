@@ -5,7 +5,6 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 require('./bootstrap');
-require('es6-promise/auto');
 import Vue from 'vue';
 import utile from './utile/utile.js'
 import SendBird from 'sendbird'
