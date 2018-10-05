@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 const returnObject = {};
 let enterChannel = {};
+
 returnObject.createChannel = (sendBirdAppKey, isOpenChannel, channelKey, clientUserId, getChannelMsg, msgUpdate) => {
     const sb = new ImportSendbird({
         appId: sendBirdAppKey,

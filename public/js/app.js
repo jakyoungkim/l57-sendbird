@@ -105212,6 +105212,7 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__testsendbirdUtil__ = __webpack_require__(100);
 //
 //
 //
@@ -105292,7 +105293,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
-var sendbirdUtil = __webpack_require__(100);
+// import sendBirdUtil from '../sendBirdUtil';
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: 'SimpleSendbird',
@@ -105312,10 +105314,11 @@ var sendbirdUtil = __webpack_require__(100);
     },
     data: function data() {
         return {
+            newSendBirdUtile: {},
             menuSwitch: false,
-            openChannelUserList: [],
-            openChannelMsg: [],
-            inputMsg: '',
+            channelUsers: [],
+            channelMessages: [],
+            inputMessage: '',
             spinnerIndex: 0
         };
     },
@@ -105324,31 +105327,30 @@ var sendbirdUtil = __webpack_require__(100);
         enterEvent: function enterEvent() {
             var _this = this;
 
-            if (this.inputMsg.length <= 0) {
+            if (this.inputMessage.length <= 0) {
                 return;
             }
-            sendbirdUtil.default.getEnterChannel().sendUserMessage(this.inputMsg, null, null, function (message, error) {
+            this.newSendBirdUtile.getEnterChannel().sendUserMessage(this.inputMessage, null, null, function (message, error) {
                 if (error) {
                     console.error(error);
                     return;
                 }
-                _this.openChannelMsg.push(message);
-                _this.inputMsg = '';
+                _this.channelMessages.push(message);
+                _this.inputMessage = '';
             });
         },
         menuOpen: function menuOpen() {
             var _this2 = this;
 
-            //let that = this;
             this.menuSwitch = !this.menuSwitch;
             if (this.menuSwitch) {
-                var participantListQuery = sendbirdUtil.default.getEnterChannel().createParticipantListQuery();
+                var participantListQuery = this.newSendBirdUtile.getEnterChannel().createParticipantListQuery();
                 participantListQuery.next(function (participantList, error) {
                     if (error) {
                         console.error(error);
                         return;
                     }
-                    _this2.openChannelUserList = participantList;
+                    _this2.channelUsers = participantList;
                 });
             }
         }
@@ -105357,11 +105359,11 @@ var sendbirdUtil = __webpack_require__(100);
         var _this3 = this;
 
         this.spinnerIndex = this.spinnerIndex + 1;
-        sendbirdUtil.default.createChannel(this.sendBirdAppKey, this.isOpenChannel, this.channelKey, this.clientUserId, function (channelMsg) {
-            _this3.openChannelMsg = channelMsg.reverse();
+        this.newSendBirdUtile = new __WEBPACK_IMPORTED_MODULE_0__testsendbirdUtil__["a" /* default */](this.sendBirdAppKey, this.isOpenChannel, this.channelKey, this.clientUserId, function (getChannelMessages) {
+            _this3.channelMessages = getChannelMessages.reverse();
             _this3.spinnerIndex = _this3.spinnerIndex - 1;
-        }, function (updatrMsg) {
-            _this3.openChannelMsg.push(updatrMsg);
+        }, function (updateMassage) {
+            _this3.channelMessages.push(updateMassage);
         });
     },
     updated: function updated() {
@@ -105375,37 +105377,67 @@ var sendbirdUtil = __webpack_require__(100);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_sendbird__ = __webpack_require__(101);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_sendbird___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_sendbird__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
-var _this = this;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
 
 
-var returnObject = {};
-var enterChannel = {};
-returnObject.createChannel = function (sendBirdAppKey, isOpenChannel, channelKey, clientUserId, getChannelMsg, msgUpdate) {
-    var sb = new __WEBPACK_IMPORTED_MODULE_0_sendbird___default.a({
-        appId: sendBirdAppKey
-    });
-    sb.connect(clientUserId, function (user, error) {
-        if (error) {
-            console.log(error);
-        } else {}
-    });
-    var openChannelList = sb.OpenChannel.createOpenChannelListQuery();
-    openChannelList.next(function (channels, error) {
-        if (error) {
-            console.log(error);
-            return;
+var sendbirdClass = function () {
+    function sendbirdClass(sendBirdAppKey, isOpenChannel, channelKey, clientUserId, getChannelMsg, msgUpdate) {
+        _classCallCheck(this, sendbirdClass);
+
+        this.sendBirdAppKey = sendBirdAppKey;
+        this.isOpenChannel = isOpenChannel;
+        this.channelKey = channelKey;
+        this.clientUserId = clientUserId;
+        this.getChannelMsg = getChannelMsg;
+        this.msgUpdate = msgUpdate;
+        this.enterChannel = {};
+        this.newSendBird = new __WEBPACK_IMPORTED_MODULE_0_sendbird___default.a({
+            appId: this.sendBirdAppKey
+        });
+        this.createChannel();
+    }
+
+    _createClass(sendbirdClass, [{
+        key: 'createChannel',
+        value: function createChannel() {
+            var _this = this;
+
+            this.newSendBird.connect(this.clientUserId, function (user, error) {
+                if (error) {
+                    console.log(error);
+                } else {}
+            });
+            var openChannelList = this.newSendBird.OpenChannel.createOpenChannelListQuery();
+            openChannelList.next(function (channels, error) {
+                if (error) {
+                    console.log(error);
+                    return;
+                }
+                var findChannel = __WEBPACK_IMPORTED_MODULE_1_lodash___default.a.find(channels, { name: _this.channelKey });
+                // openChannel 있을때
+                if (findChannel) {
+                    _this.openChannelEnter(findChannel);
+                } else {
+                    // openChannel 없을때
+                    _this.openChannelAdd();
+                }
+            });
         }
-        var findChannel = __WEBPACK_IMPORTED_MODULE_1_lodash___default.a.find(channels, { name: channelKey });
-        var openChannelEnter = function openChannelEnter(channelSelect) {
-            enterChannel = channelSelect;
-            sb.OpenChannel.getChannel(channelSelect.url, function (channel, error) {
+    }, {
+        key: 'openChannelEnter',
+        value: function openChannelEnter(channelSelect) {
+            var _this2 = this;
+
+            this.enterChannel = channelSelect;
+            this.newSendBird.OpenChannel.getChannel(channelSelect.url, function (channel, error) {
                 if (error) {
                     console.error(error);
                     return;
@@ -105421,53 +105453,62 @@ returnObject.createChannel = function (sendBirdAppKey, isOpenChannel, channelKey
                         console.error(error);
                         return;
                     }
-                    getChannelMsg.call(_this, messageList);
+                    _this2.getChannelMsg.call(_this2, messageList);
                 });
             });
+
             /**
              * event handler
              * */
-            var ChannelHandler = new sb.ChannelHandler();
+            this.addEventHandler();
+        }
+    }, {
+        key: 'openChannelAdd',
+        value: function openChannelAdd() {
+            var _this3 = this;
+
+            this.newSendBird.OpenChannel.createChannel(this.channelKey, null, null, function (createdChannel, error) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                _this3.openChannelEnter(createdChannel);
+            });
+        }
+    }, {
+        key: 'addEventHandler',
+        value: function addEventHandler() {
+            var _this4 = this;
+
+            var ChannelHandler = new this.newSendBird.ChannelHandler();
             ChannelHandler.onMessageReceived = function (channel, message) {
-                msgUpdate.call(_this, message);
+                _this4.msgUpdate.call(_this4, message);
             };
             ChannelHandler.onUserEntered = function (openChannel, user) {
                 user.type = 'in';
                 user._sender = {
                     userId: user.userId
                 };
-                msgUpdate.call(_this, user);
+                _this4.msgUpdate.call(_this4, user);
             };
             ChannelHandler.onUserExited = function (openChannel, user) {
                 console.log(user);
             };
             var date = new Date();
-            var handlerKey = clientUserId + date.getHours() + date.getMinutes() + date.getSeconds();
-            sb.addChannelHandler(handlerKey, ChannelHandler);
-        };
-        var openChannelAdd = function openChannelAdd() {
-            sb.OpenChannel.createChannel(channelKey, null, null, function (createdChannel, error) {
-                if (error) {
-                    console.error(error);
-                    return;
-                }
-                openChannelEnter(createdChannel);
-            });
-        };
-        // openChannel 있을때
-        if (findChannel) {
-            openChannelEnter(findChannel);
-        } else {
-            // openChannel 없을때
-            openChannelAdd();
+            var handlerKey = this.clientUserId + date.getHours() + date.getMinutes() + date.getSeconds();
+            this.newSendBird.addChannelHandler(handlerKey, ChannelHandler);
         }
-    });
-};
-returnObject.getEnterChannel = function () {
-    return enterChannel;
-};
+    }, {
+        key: 'getEnterChannel',
+        value: function getEnterChannel() {
+            return this.enterChannel;
+        }
+    }]);
 
-/* harmony default export */ __webpack_exports__["default"] = (returnObject);
+    return sendbirdClass;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (sendbirdClass);
 
 /***/ }),
 /* 101 */
@@ -105519,7 +105560,12 @@ var render = function() {
   return _c("div", [
     _c("table", { attrs: { id: "chatArea" } }, [
       _c("tr", [
-        _c("td", { staticClass: "padding-20" }, [_c("test-video")], 1),
+        _c(
+          "td",
+          { staticClass: "padding-20 text-right" },
+          [_c("test-video")],
+          1
+        ),
         _vm._v(" "),
         _c("td", { staticClass: "text-center" }, [
           _c(
@@ -105549,7 +105595,7 @@ var render = function() {
               _c("div", { attrs: { id: "msgArea" } }, [
                 _c(
                   "div",
-                  _vm._l(_vm.openChannelMsg, function(item, index) {
+                  _vm._l(_vm.channelMessages, function(item, index) {
                     return _c(
                       "div",
                       {
@@ -105662,10 +105708,7 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "div",
-                            _vm._l(_vm.openChannelUserList, function(
-                              item,
-                              index
-                            ) {
+                            _vm._l(_vm.channelUsers, function(item, index) {
                               return _c(
                                 "div",
                                 { class: { "t-10": index !== 0 } },

@@ -2,7 +2,7 @@
     <div>
         <table id="chatArea">
             <tr>
-                <td class="padding-20">
+                <td class="padding-20 text-right">
                     <test-video></test-video>
                 </td>
                 <td class="text-center">
@@ -14,7 +14,7 @@
                         <div id="msgArea">
                             <div>
                                 <div class="w-100"
-                                     v-for="(item, index) in openChannelMsg"
+                                     v-for="(item, index) in channelMessages"
                                      :class="{'t-10':index !== 0, 'text-right':clientUserId === item._sender.userId,
                                      'text-left':clientUserId !== item._sender.userId}"
                                 >
@@ -46,7 +46,7 @@
                                 <div id="menuArea">
                                     <div class="font-weight-bold">접속자</div>
                                     <div>
-                                        <div v-for="(item, index) in openChannelUserList"
+                                        <div v-for="(item, index) in channelUsers"
                                              :class="{'t-10':index !== 0}">
                                             <div class="font-weight-bold">{{ index+1 }}.</div>
                                             <div>{{ item.userId }}</div>
@@ -78,7 +78,8 @@
 </template>
 
 <script>
-const sendbirdUtil = require('../sendbirdUtil');
+// import sendBirdUtil from '../sendBirdUtil';
+import sendBirdUtil from '../testsendbirdUtil';
 
 export default {
     name: 'SimpleSendbird',
@@ -98,55 +99,55 @@ export default {
     },
     data() {
         return {
+            newSendBirdUtile: {},
             menuSwitch: false,
-            openChannelUserList: [],
-            openChannelMsg: [],
-            inputMsg: '',
+            channelUsers: [],
+            channelMessages: [],
+            inputMessage: '',
             spinnerIndex: 0,
         };
     },
     methods: {
         enterEvent() {
-            if (this.inputMsg.length <= 0) {
+            if (this.inputMessage.length <= 0) {
                 return;
             }
-            sendbirdUtil.default.getEnterChannel().sendUserMessage(this.inputMsg, null, null, (message, error) => {
+            this.newSendBirdUtile.getEnterChannel().sendUserMessage(this.inputMessage, null, null, (message, error) => {
                 if (error) {
                     console.error(error);
                     return;
                 }
-                this.openChannelMsg.push(message);
-                this.inputMsg = '';
+                this.channelMessages.push(message);
+                this.inputMessage = '';
             });
         },
         menuOpen() {
-            //let that = this;
             this.menuSwitch = !this.menuSwitch;
             if (this.menuSwitch) {
-                const participantListQuery = sendbirdUtil.default.getEnterChannel().createParticipantListQuery();
+                const participantListQuery = this.newSendBirdUtile.getEnterChannel().createParticipantListQuery();
                 participantListQuery.next((participantList, error) => {
                     if (error) {
                         console.error(error);
                         return;
                     }
-                    this.openChannelUserList = participantList;
+                    this.channelUsers = participantList;
                 });
             }
         },
     },
     created() {
         this.spinnerIndex = this.spinnerIndex + 1;
-        sendbirdUtil.default.createChannel(
+        this.newSendBirdUtile = new sendBirdUtil(
             this.sendBirdAppKey,
             this.isOpenChannel,
             this.channelKey,
             this.clientUserId,
-            (channelMsg) => {
-                this.openChannelMsg = channelMsg.reverse();
+            (getChannelMessages) => {
+                this.channelMessages = getChannelMessages.reverse();
                 this.spinnerIndex = this.spinnerIndex - 1;
             },
-            (updatrMsg) => {
-                this.openChannelMsg.push(updatrMsg);
+            (updateMassage) => {
+                this.channelMessages.push(updateMassage);
             },
         );
     },
