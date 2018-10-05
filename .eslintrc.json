@@ -18,7 +18,8 @@
         "no-empty": "off",
         "no-console": "off",
         "import/extensions": "off",
-        "import/first": "off"
+        "import/first": "off",
+        "no-shadow": "off"
     },
     "globals": {
         "window": false,

@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        </div>
-        <send-bird :app-key="'{{ $key }}'"></send-bird>
-    </div>
+    <simple-sendbird
+        :send-bird-app-key="'{{ $key }}'"
+        :client-user-id="'{{ $user }}'"
+        :channel-key="'{{ $channel }}'"
+    ></simple-sendbird>
 @endsection

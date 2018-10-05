@@ -8,41 +8,45 @@
                 <td class="text-center">
                     <div id="chatContain">
                         <div id="headerArea" class="font-weight-bold">
-                            <div @click="menuOpen" class="font-weight-bold">M</div>
-                            <div>{{ title }}</div>
+                            <div class="font-weight-bold" @click="menuOpen">M</div>
+                            <div></div>
                         </div>
                         <div id="msgArea">
                             <div>
-                                <div class="w-100" v-for="(item, index) in $store.getters.getChannelMsg"
-                                     :class="{'t-10':index !== 0, 'text-right':my === item._sender.userId,
-                                     'text-left':my !== item._sender.userId}">
-                                    <div v-if="item.type !== 'in' && 'out'">
+                                <div class="w-100"
+                                     v-for="(item, index) in openChannelMsg"
+                                     :class="{'t-10':index !== 0, 'text-right':clientUserId === item._sender.userId,
+                                     'text-left':clientUserId !== item._sender.userId}"
+                                >
+                                    <div  v-if="item.type !== 'in' && 'out'">
                                         <div class="dis-i-b">{{ item._sender.userId }} :</div>
                                         <div class="userMsg font-weight-bold dis-i-b"
-                                             :class="{'b-y':my === item._sender.userId}">{{item.message}}
+                                             :class="{'b-y':clientUserId === item._sender.userId}">
+                                            {{item.message}}
                                         </div>
                                     </div>
                                     <div v-else>
-                                        <div class="font-weight-bold text-center">------{{item.userId}}
-                                            <span v-if="item.type === 'in'">입장하셨습니다.</span>
-                                            <span v-else>퇴장하셨습니다.</span>------
+                                        <div class="font-weight-bold text-center">
+                                            ------{{ item._sender.userId }}님이 입장하셨습니다.------
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            <input id="chatInput" @keydown.enter="enterEvent"
-                                   v-model="inputData"/>
+                            <input id="chatInput"
+                                   v-model="inputMsg"
+                                   @keyup.enter="enterEvent"
+                            />
                             <button id="chatBtn" @click="enterEvent">전송</button>
                         </div>
                         <transition name="fade" mode="out-in">
-                            <div id="menuContain" v-if="menu">
+                            <div id="menuContain" v-if="menuSwitch" @click="menuOpen">
                                 <div id="backArea"></div>
-                                <div id="menuArea" @click="menuOpen">
+                                <div id="menuArea">
                                     <div class="font-weight-bold">접속자</div>
                                     <div>
-                                        <div v-for="(item, index) in channelUserList"
+                                        <div v-for="(item, index) in openChannelUserList"
                                              :class="{'t-10':index !== 0}">
                                             <div class="font-weight-bold">{{ index+1 }}.</div>
                                             <div>{{ item.userId }}</div>
@@ -51,7 +55,21 @@
                                 </div>
                             </div>
                         </transition>
-                        <spinner></spinner>
+                        <div id="spinnerArea" v-if="spinnerIndex !== 0">
+                            <div></div>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div class="lds-ring">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </td>
             </tr>
@@ -60,104 +78,81 @@
 </template>
 
 <script>
+const sendbirdUtil = require('../sendbirdUtil');
+
 export default {
     name: 'SimpleSendbird',
     props: {
-        appKey: {
+        sendBirdAppKey: {
             type: String,
         },
-        user: {
+        clientUserId: {
             type: String,
         },
-        channelName: {
+        channelKey: {
             type: String,
         },
-    },
-    methods: {
-        enterEvent: function () {
-            let that = this
-            if (this.inputData.length <= 0) return
-            this.channel.sendUserMessage(this.inputData, null, null, function (message, error) {
-                if (error) {
-                    console.error(error)
-                    return;
-                }
-                that.$store.getters.getChannelMsg.push(message)
-                that.inputData = '';
-            });
-        },
-        menuOpen: function () {
-            let that = this
-            this.menu = !this.menu
-            if (this.menu) {
-                let participantListQuery = that.channel.createParticipantListQuery();
-                participantListQuery.next(function (participantList, error) {
-                    if (error) {
-                        console.error(error)
-                        return;
-                    }
-                    that.channelUserList = participantList
-                });
-            }
+        isOpenChannel: {
+            type: Boolean,
         },
     },
     data() {
         return {
-            my: '',
-            sb: {},
-            channel: {},
-            title: '',
-            inputData: '',
-            menu: false,
-            channelUserList: [],
+            menuSwitch: false,
+            openChannelUserList: [],
+            openChannelMsg: [],
+            inputMsg: '',
+            spinnerIndex: 0,
         };
     },
-    created() {
-        const that = this
-        /**
-         * reset
-         * */
-        let utiles = this.$utile
-        let sb = utiles.sb()
-        this.sb = sb.reset(sb.utile, this.appKey)
-        /**
-         * connetion
-         **/
-        //임시 User 생성
-        // const devUser = this.$utile.devUser()
-        this.my = this.user
-        sb.connetion(this.sb, this.user)
-        // this.my = '123123qw'
-        // sb.connetion(this.sb, '123123qw')
-        /**
-         * Channel add or Enter
-         * */
-        sb.openChannelList(this.sb).then((value) => {
-            const channelName = that.channelName
-            this.title = channelName
-            const result = utiles.objectListSearch(value, {
-                key: 'name',
-                value: channelName,
+    methods: {
+        enterEvent() {
+            if (this.inputMsg.length <= 0) {
+                return;
+            }
+            sendbirdUtil.default.getEnterChannel().sendUserMessage(this.inputMsg, null, null, (message, error) => {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                this.openChannelMsg.push(message);
+                this.inputMsg = '';
             });
-            if (result.result) {
-                // 접속
-                sb.openChannelEnter(this.sb, result.searchItem).then((value) => {
-                    this.$store.commit('channelMsg', value.msg)
-                    this.channel = value.channel
-                });
-            } else {
-                // 채널 생성 및 접속
-                sb.openChannelAdd(this.sb, channelName).then((result) => {
-                    sb.openChannelEnter(this.sb, result).then((value) => {
-                        this.$store.commit('channelMsg', value.msg)
-                        this.channel = value.channel;
-                    });
+        },
+        menuOpen() {
+            //let that = this;
+            this.menuSwitch = !this.menuSwitch;
+            if (this.menuSwitch) {
+                const participantListQuery = sendbirdUtil.default.getEnterChannel().createParticipantListQuery();
+                participantListQuery.next((participantList, error) => {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    this.openChannelUserList = participantList;
                 });
             }
-        });
+        },
+    },
+    created() {
+        this.spinnerIndex = this.spinnerIndex + 1;
+        sendbirdUtil.default.createChannel(
+            this.sendBirdAppKey,
+            this.isOpenChannel,
+            this.channelKey,
+            this.clientUserId,
+            (channelMsg) => {
+                this.openChannelMsg = channelMsg.reverse();
+                this.spinnerIndex = this.spinnerIndex - 1;
+            },
+            (updatrMsg) => {
+                this.openChannelMsg.push(updatrMsg);
+            },
+        );
     },
     updated() {
-        this.$utile.gotoBottom("msgArea");
+        const element = document.getElementById('msgArea');
+        element.scrollTop = element.scrollHeight;
     },
 };
 </script>
@@ -324,5 +319,67 @@ export default {
         width: 700px;
         padding: 20px;
         background-color: #c1f5da;
+    }
+    /*spinner*/
+    #spinnerArea {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+    }
+
+    #spinnerArea > div:nth-child(1) {
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        background-color: #000000;
+    }
+
+    #spinnerArea > table:nth-child(2) {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+    }
+
+    .lds-ring {
+        display: inline-block;
+        position: relative;
+        width: 64px;
+        height: 64px;
+    }
+
+    .lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 51px;
+        height: 51px;
+        margin: 6px;
+        border: 6px solid #fff;
+        border-radius: 50%;
+        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: #fff transparent transparent transparent;
+    }
+
+    .lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+    }
+
+    .lds-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+    }
+
+    .lds-ring div:nth-child(3) {
+        animation-delay: -0.15s;
+    }
+
+    @keyframes lds-ring {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
 </style>
