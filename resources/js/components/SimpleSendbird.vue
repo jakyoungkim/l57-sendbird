@@ -35,7 +35,7 @@
                         </div>
                         <div>
                             <input id="chatInput"
-                                   v-model="inputMsg"
+                                   v-model="inputMessage"
                                    @keyup.enter="enterEvent"
                             />
                             <button id="chatBtn" @click="enterEvent">전송</button>
@@ -55,7 +55,7 @@
                                 </div>
                             </div>
                         </transition>
-                        <div id="spinnerArea" v-if="spinnerIndex !== 0">
+                        <div id="spinnerArea" v-if="spinner">
                             <div></div>
                             <table>
                                 <tr>
@@ -78,14 +78,16 @@
 </template>
 
 <script>
-// import sendBirdUtil from '../sendBirdUtil';
-import sendBirdUtil from '../testsendbirdUtil';
+import Sendbird from '../sendbirdChat';
 
 export default {
     name: 'SimpleSendbird',
     props: {
         sendBirdAppKey: {
             type: String,
+        },
+        token: {
+          type: String,
         },
         clientUserId: {
             type: String,
@@ -99,12 +101,13 @@ export default {
     },
     data() {
         return {
-            newSendBirdUtile: {},
+            sendBird: {},
             menuSwitch: false,
             channelUsers: [],
             channelMessages: [],
             inputMessage: '',
-            spinnerIndex: 0,
+            spinner: false,
+            playTime: 0,
         };
     },
     methods: {
@@ -112,7 +115,9 @@ export default {
             if (this.inputMessage.length <= 0) {
                 return;
             }
-            this.newSendBirdUtile.getEnterChannel().sendUserMessage(this.inputMessage, null, null, (message, error) => {
+            const date = new Date();
+            const timestamp = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + ':' + date.getMilliseconds();
+            this.sendBird.getEnterChannel().sendUserMessage(this.inputMessage, timestamp, 'timestemp', (message, error) => {
                 if (error) {
                     console.error(error);
                     return;
@@ -124,7 +129,7 @@ export default {
         menuOpen() {
             this.menuSwitch = !this.menuSwitch;
             if (this.menuSwitch) {
-                const participantListQuery = this.newSendBirdUtile.getEnterChannel().createParticipantListQuery();
+                const participantListQuery = this.sendBird.getEnterChannel().createParticipantListQuery();
                 participantListQuery.next((participantList, error) => {
                     if (error) {
                         console.error(error);
@@ -134,27 +139,34 @@ export default {
                 });
             }
         },
+        scrollBottom(elementId) {
+            const element = document.getElementById(elementId);
+            element.scrollTop = element.scrollHeight;
+        },
     },
     created() {
-        this.spinnerIndex = this.spinnerIndex + 1;
-        this.newSendBirdUtile = new sendBirdUtil(
+        this.spinner = true;
+        this.sendBird = new Sendbird(
             this.sendBirdAppKey,
+            this.token,
             this.isOpenChannel,
             this.channelKey,
             this.clientUserId,
-            (getChannelMessages) => {
-                this.channelMessages = getChannelMessages.reverse();
-                this.spinnerIndex = this.spinnerIndex - 1;
+            (messagesCallback) => {
+                this.channelMessages = messagesCallback.reverse();
+                this.spinner = false;
             },
-            (updateMassage) => {
-                this.channelMessages.push(updateMassage);
+            (messageCallback) => {
+                this.channelMessages.push(messageCallback);
+            },
+            (errorCallback) => {
+                console.error(errorCallback);
             },
         );
     },
     updated() {
-        const element = document.getElementById('msgArea');
-        element.scrollTop = element.scrollHeight;
-    },
+        this.scrollBottom('msgArea');
+    }
 };
 </script>
 
@@ -317,8 +329,6 @@ export default {
         opacity: 0;
     }
     .padding-20 {
-        width: 700px;
-        padding: 20px;
         background-color: #c1f5da;
     }
     /*spinner*/

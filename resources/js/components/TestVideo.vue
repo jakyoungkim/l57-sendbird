@@ -14,8 +14,35 @@
 </template>
 
 <script>
+import 'video.js/dist/video-js.css';
+import videojs from 'video.js';
+import videoPlayTime from 'videojs-playtime';
+
 export default {
     name: 'TestVideo',
+    data() {
+        return {
+            currentTime: 0,
+        };
+    },
+    mounted() {
+        videojs.plugin('videoPlayTime', videoPlayTime);
+        const player = videojs('my_video_1', {
+            techOrder: ['flash', 'html5'],
+            plugins: {
+                videoPlayTime: null,
+            },
+        });
+        const timeCheck = () => {
+            const date = new Date();
+            if (player.playTime() > 0) {
+                const timestampa = date.getHours() + ':' + date.getMinutes() + ':' + player.playTime() + ':' + date.getMilliseconds();
+                this.currentTime = timestampa;
+                this.$EventBus.$emit('time', timestampa);
+            }
+        };
+        player.on('timeupdate', timeCheck);
+    },
 };
 </script>
 
@@ -23,9 +50,13 @@ export default {
 #videoContainer {
     width: 100%;
 }
-#instructions { max-width: 640px; text-align: left; margin: 30px auto; }
-#instructions textarea { width: 100%; height: 100px; }
-
+#instructions {
+    width: 720px;
+}
+#instructions textarea {
+    width: 100%;
+    height: 100px;
+}
 /* Show the controls (hidden at the start by default) */
 .video-js .vjs-control-bar {
     display: -webkit-box;
@@ -33,4 +64,8 @@ export default {
     display: -ms-flexbox;
     display: flex;
 }
+.video-js.vjs-fluid{
+    height: 600px;
+}
+
 </style>

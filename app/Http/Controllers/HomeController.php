@@ -25,8 +25,9 @@ class HomeController extends Controller
     public function index()
     {
         $data['key'] = '076F2CD7-A154-4522-8415-112D6CDB2248';
-        $data['user'] = $_GET['user'];
-        $data['channel'] = $_GET['channel'];
+        $data['token'] = 'd0ac5ba5cf524fff22ba05c4ec3b3db6af53a030';
+        $data['user'] = $_REQUEST['user'];
+        $data['channel'] = $_REQUEST['channel'];
         return view('home', $data);
     }
 }

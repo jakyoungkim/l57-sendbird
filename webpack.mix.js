@@ -14,19 +14,18 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css');
 
-// BABEL config
-// mix.webpackConfig({
-//     module: {
-//         rules: [
-//             {
-//                 test: /\.js?$/,
-//                 use: {
-//                     loader: 'babel-loader',
-//                     options: {
-//                         presets: ['es2015'], // default == env
-//                     },
-//                 },
-//             },
-//         ],
-//     },
-// })
+mix.webpackConfig({
+    module: {
+        rules: [
+            {
+                test: /\.jsx?$/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['es2015'], // default = env
+                    },
+                },
+            },
+        ],
+    },
+});

@@ -19,7 +19,8 @@
         "no-console": "off",
         "import/extensions": "off",
         "import/first": "off",
-        "no-shadow": "off"
+        "no-shadow": "off",
+        "no-underscore-dangle": "off"
     },
     "globals": {
         "window": false,

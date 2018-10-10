@@ -9,9 +9,8 @@ window.HELP_IMPROVE_VIDEOJS = false;
  */
 require('./bootstrap');
 
-import 'video.js/dist/video-js.css';
-import 'video.js';
 import Vue from 'vue';
+import 'typedarray';
 /**
  * Component
  * */
@@ -24,6 +23,8 @@ import TestVideo from './components/TestVideo';
  */
 Vue.component('simple-sendbird', SimpleSendbird);
 Vue.component('test-video', TestVideo);
+
+Vue.prototype.$EventBus = new Vue();
 const app = new Vue({
     el: '#app',
 });
